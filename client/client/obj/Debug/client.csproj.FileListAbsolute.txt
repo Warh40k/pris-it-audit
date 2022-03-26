@@ -1,0 +1,16 @@
+C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\client.exe.config
+C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\client.exe
+C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\client.pdb
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.AssemblyReference.cache
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.SuggestedBindingRedirects.cache
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\MainWindow.g.cs
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\App.g.cs
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client_MarkupCompile.cache
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client_MarkupCompile.lref
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\MainWindow.baml
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.g.resources
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.Properties.Resources.resources
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.GenerateResource.cache
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.CoreCompileInputs.cache
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.exe
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.pdb
