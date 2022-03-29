@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Data.OleDb;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -20,9 +21,12 @@ namespace client
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=DataBase.mdb;";
         public MainWindow()
         {
             InitializeComponent();
+            
+
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -38,6 +42,31 @@ namespace client
         private void DataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void ListBoxItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            OleDbConnection dbConnection = new OleDbConnection(connectionString);
+
+            dbConnection.Open();
+            string query = "SELECT * FROM Worker";
+            OleDbCommand command = new OleDbCommand(query, dbConnection);
+            OleDbDataReader reader = command.ExecuteReader();
+
+            List<Worker> workers = new List<Worker>();
+            while (reader.Read())
+            {
+                workers.Add(new Worker()
+                {
+                    Id = int.Parse(reader[0].ToString()),
+                    Name = reader[1].ToString(),
+                    Surname = reader[2].ToString(),
+                    Position = reader[3].ToString(),
+                    Department = reader[4].ToString()
+                });
+            }
+
+            dataGrid.ItemsSource = workers
         }
     }
 }

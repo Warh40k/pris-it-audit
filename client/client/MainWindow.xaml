@@ -8,29 +8,24 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip">
     <Grid>
-        <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top">
+        <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
             <MenuItem Header="MenuItem"/>
             <MenuItem Header="MenuItem"/>
         </Menu>
-        <Menu HorizontalContentAlignment="Stretch" VerticalAlignment="Top" MinWidth="800" VerticalContentAlignment="Top" Margin="0,18,0,0">
+        <Menu HorizontalContentAlignment="Center" VerticalAlignment="Top" MinWidth="800" VerticalContentAlignment="Center" Margin="0,18,0,0" FlowDirection="LeftToRight" Padding="150,0,0,0" Background="#FFDAD5D5" Height="32">
             <MenuItem Header="MenuItem"/>
             <MenuItem Header="MenuItem"/>
         </Menu>
-        <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,36,0,-2">
-            <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" MinWidth="100" MinHeight="400">
-                <ListBoxItem Content="Nikita"/>
+        <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,50,0,-2">
+            <ListBox MinWidth="100" MinHeight="400" Background="#FFB3C6E9">
+                <ListBoxItem/>
+                <ListBoxItem Content="Работник&#xD;&#xA;" MouseLeftButtonUp="ListBoxItem_MouseLeftButtonUp" Height="19" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SnapsToDevicePixels="True" BorderBrush="#FFD11B1B" Background="#FF00FFED">
+                    <ListBoxItem.Effect>
+                        <DropShadowEffect/>
+                    </ListBoxItem.Effect>
+                </ListBoxItem>
             </ListBox>
-            <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="DataGrid_SelectionChanged_1" AutoGenerateColumns="False" AreRowDetailsFrozen="True" MinWidth="670" DockPanel.Dock="Right">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ФИО"/>
-                    <DataGridTextColumn HeaderStringFormat="ДР" Header="Дата рождения">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style/>
-                        </DataGridTextColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                    <DataGridCheckBoxColumn Header="Удалено"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <DataGrid x:Name="dataGrid" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
         </DockPanel>
     </Grid>
 </Window>
