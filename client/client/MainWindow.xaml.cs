@@ -53,10 +53,10 @@ namespace client
             OleDbCommand command = new OleDbCommand(query, dbConnection);
             OleDbDataReader reader = command.ExecuteReader();
 
-            List<Worker> workers = new List<Worker>();
+            List<BdAccess> workers = new List<BdAccess>();
             while (reader.Read())
             {
-                workers.Add(new Worker()
+                workers.Add(new BdAccess()
                 {
                     Id = int.Parse(reader[0].ToString()),
                     Name = reader[1].ToString(),
@@ -66,7 +66,7 @@ namespace client
                 });
             }
 
-            dataGrid.ItemsSource = workers
+            dataGrid.ItemsSource = workers;
         }
     }
 }

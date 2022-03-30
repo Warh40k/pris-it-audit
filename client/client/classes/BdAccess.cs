@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace client
 {
-    internal class Worker
+    internal class BdAccess
     {
         public int Id { get; set; }
         public string Name { get; set; }
