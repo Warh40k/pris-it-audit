@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace client
 {
-    internal class BdAccess
+    static internal class BdAccess
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Position { get; set; }
-        public string Department { get; set; }
+        public static string conString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=DataBase.mdb;";
 
+        public static void SetTable(string query, DataGrid dg)
+        {
+            OleDbConnection con = new OleDbConnection(conString);
+
+            con.Open();
+            OleDbCommand command = new OleDbCommand(query, con);
+            OleDbDataAdapter oda = new OleDbDataAdapter(command);
+
+            DataTable dt = new DataTable();
+            oda.Fill(dt);
+
+            dg.ItemsSource = dt.DefaultView;
+        }
     }
 }
