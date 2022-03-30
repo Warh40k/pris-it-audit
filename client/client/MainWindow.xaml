@@ -19,16 +19,9 @@
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel Orientation="Vertical" Width="100">
                 <Label Content="Таблицы" HorizontalAlignment="Center"/>
-                <ListBox x:Name="elementList" MinWidth="100" MinHeight="372" Background="#FFB3C6E9" Height="282">
-                    <ListBoxItem/>
-                    <ListBoxItem Content="Работник" MouseLeftButtonUp="ListBoxItem_MouseLeftButtonUp" Height="19" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SnapsToDevicePixels="True" BorderBrush="#FFD11B1B" Background="#FF00FFED">
-                        <ListBoxItem.Effect>
-                            <DropShadowEffect/>
-                        </ListBoxItem.Effect>
-                    </ListBoxItem>
-                </ListBox>
+                <ListBox x:Name="elementList" MinWidth="100" MinHeight="372" Background="#FFB3C6E9"/>
             </StackPanel>
-            <DataGrid x:Name="dataGrid" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
         </DockPanel>
         <WrapPanel Margin="100,0,0,0" VerticalAlignment="Bottom" Height="40" ItemHeight="25" ItemWidth="170" Grid.Row="0" HorizontalAlignment="Stretch">
             <Button Content="Создать" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>

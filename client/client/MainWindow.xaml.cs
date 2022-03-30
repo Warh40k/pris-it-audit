@@ -27,30 +27,16 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
-            BdAccess.SetList(elementList);
-
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void DataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
+            DbAccess bd = new DbAccess() {dg = dataGrid};
+            bd.SetList(elementList);
 
         }
 
         private void ListBoxItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             string query = "SELECT * FROM Worker";
-            BdAccess.SetTable(query, dataGrid);
+            DbAccess.SetTable(query, dataGrid);
         }
-
+      
     }
 }
