@@ -27,7 +27,7 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
-            
+            BdAccess.SetList(elementList);
 
         }
 
@@ -50,11 +50,7 @@ namespace client
         {
             string query = "SELECT * FROM Worker";
             BdAccess.SetTable(query, dataGrid);
-            dataGrid.Columns[0].Header = "ИД";
-            dataGrid.Columns[1].Header = "Имя";
-            dataGrid.Columns[2].Header = "Фамилия";
-            dataGrid.Columns[3].Header = "Должность";
-            dataGrid.Columns[4].Header = "Отдел";
         }
+
     }
 }

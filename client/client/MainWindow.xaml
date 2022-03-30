@@ -19,7 +19,7 @@
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel Orientation="Vertical" Width="100">
                 <Label Content="Таблицы" HorizontalAlignment="Center"/>
-                <ListBox x:Name="ElementList" MinWidth="100" MinHeight="372" Background="#FFB3C6E9" Height="282">
+                <ListBox x:Name="elementList" MinWidth="100" MinHeight="372" Background="#FFB3C6E9" Height="282">
                     <ListBoxItem/>
                     <ListBoxItem Content="Работник" MouseLeftButtonUp="ListBoxItem_MouseLeftButtonUp" Height="19" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SnapsToDevicePixels="True" BorderBrush="#FFD11B1B" Background="#FF00FFED">
                         <ListBoxItem.Effect>

@@ -23,8 +23,25 @@ namespace client
 
             DataTable dt = new DataTable();
             oda.Fill(dt);
-
+            con.Close();
             dg.ItemsSource = dt.DefaultView;
+        }
+        public static void SetList(ListBox list)
+        {
+            OleDbConnection con = new OleDbConnection(conString);
+
+            con.Open();
+
+            string[] restrictions = new string[4];
+            restrictions[3] = "Table";
+
+            DataTable dt = con.GetSchema("Tables", restrictions);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Items.Add(row["TABLE_NAME"]);
+            }
+
         }
     }
 }
