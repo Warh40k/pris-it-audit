@@ -24,7 +24,7 @@
             <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
         </DockPanel>
         <WrapPanel Margin="100,0,0,0" VerticalAlignment="Bottom" Height="40" ItemHeight="25" ItemWidth="170" Grid.Row="0" HorizontalAlignment="Stretch">
-            <Button Content="Создать" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
+            <Button Content="Добавить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
             <Button Content="Удалить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
             <Button Content="Изменить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
             <Button Content="Поиск" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>

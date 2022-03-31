@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.Data;
 using System.Data.OleDb;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace client
 {
     internal class DbAccess
     {
-        public static string conString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=DataBase.mdb;";
+        public static string conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;";
         public DataGrid dg;
         public static void SetTable(string query, DataGrid dg)
         {
@@ -26,8 +19,8 @@ namespace client
             DataTable dt = new DataTable();
             oda.Fill(dt);
             con.Close();
+            
             dg.ItemsSource = dt.DefaultView;
-            //dg.Columns[0].SortDirection = ListSortDirection.Ascending;
         }
         public void SetList(ListBox list)
         {
@@ -51,14 +44,18 @@ namespace client
             }
 
         }
-
         private void Item_Selected(object sender, System.Windows.RoutedEventArgs e)
         {
             ListBoxItem item = (ListBoxItem)e.Source;
             string content = item.Content.ToString();
-            string query = string.Format("SELECT * FROM {0}", content);
-            DbAccess.SetTable(query, dg);
-        }
-    }
+            string query;
 
+            if (content == "Worker")
+                query = "SELECT CodeWorker, Worker.Name As Name, Division.Name as Division, Type FROM Worker LEFT JOIN Division ON Division.CodeDivision = Worker.Division;";
+            else
+                query = string.Format("SELECT * FROM {0}", content);
+            SetTable(query, dg);
+        }
+
+    }
 }
