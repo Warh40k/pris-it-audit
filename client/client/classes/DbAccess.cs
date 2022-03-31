@@ -11,19 +11,11 @@ namespace client
         public DataGrid dg;
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
-            {"Worker", "SELECT CodeWorker, Worker.Name As Name, Division.Name as Division, Type " +
-                "FROM Worker LEFT JOIN Division ON Division.CodeDivision = Worker.Division;"},
+            {"Employee", "SELECT Employee.Id As Id, Employee.Name As Name, Department.Name as Department, Type " +
+                "FROM Employee LEFT JOIN Department ON Department.Id = Employee.Department;"},
             {"Default", "SELECT * FROM "},
-            {"Infrastructure", "SELECT " +
-                "Infrastructure.InventoryNumber, EquipmentSoftware.NameES, Infrastructure.ReleaseDate, " +
-                "Infrastructure.PurchaseDate, Office.OfficeName, Worker.Name, Infrastructure.Price " +
-                "FROM Worker " +
-                "INNER JOIN (Office INNER JOIN (EquipmentSoftware " +
-                "INNER JOIN Infrastructure " +
-                "ON EquipmentSoftware.[CodeES] = Infrastructure.[NameInfr]) " +
-                "ON Office.[CodeOffice] = Infrastructure.[Office]) " +
-                "ON Worker.[CodeWorker] = Infrastructure.[ResponsiblePerson];" },
-            {"Office","SELECT CodeOffice, Division.Name AS Division, OfficeName AS Name FROM Office LEFT JOIN Division ON Division.CodeDivision = Office.Division" }
+            {"Infrastructure", "SELECT Infrastructure.Id AS Id, Inventory.Name AS Name, Infrastructure.DateRelease AS Released, Infrastructure.DatePurchase AS Purchased, Office.Name AS Office, Employee.Name AS Responsible, Infrastructure.Price AS Price FROM Employee INNER JOIN (Office INNER JOIN (Inventory INNER JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible];" },
+            {"Office","SELECT Office.Id, Department.Name AS Department, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department" }
         };
         public static void SetTable(string query, DataGrid dg)
         {
