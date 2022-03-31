@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.OleDb;
 using System.Windows.Controls;
 
@@ -6,8 +7,24 @@ namespace client
 {
     internal class DbAccess
     {
-        public static string conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;";
+        static string conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;";
         public DataGrid dg;
+        Dictionary<string, string> queries = new Dictionary<string, string>()
+        {
+            {"Worker", "SELECT CodeWorker, Worker.Name As Name, Division.Name as Division, Type " +
+                "FROM Worker LEFT JOIN Division ON Division.CodeDivision = Worker.Division;"},
+            {"Default", "SELECT * FROM "},
+            {"Infrastructure", "SELECT " +
+                "Infrastructure.InventoryNumber, EquipmentSoftware.NameES, Infrastructure.ReleaseDate, " +
+                "Infrastructure.PurchaseDate, Office.OfficeName, Worker.Name, Infrastructure.Price " +
+                "FROM Worker " +
+                "INNER JOIN (Office INNER JOIN (EquipmentSoftware " +
+                "INNER JOIN Infrastructure " +
+                "ON EquipmentSoftware.[CodeES] = Infrastructure.[NameInfr]) " +
+                "ON Office.[CodeOffice] = Infrastructure.[Office]) " +
+                "ON Worker.[CodeWorker] = Infrastructure.[ResponsiblePerson];" },
+            {"Office","SELECT CodeOffice, Division.Name AS Division, OfficeName AS Name FROM Office LEFT JOIN Division ON Division.CodeDivision = Office.Division" }
+        };
         public static void SetTable(string query, DataGrid dg)
         {
             OleDbConnection con = new OleDbConnection(conString);
@@ -48,13 +65,10 @@ namespace client
         {
             ListBoxItem item = (ListBoxItem)e.Source;
             string content = item.Content.ToString();
-            string query;
-
-            if (content == "Worker")
-                query = "SELECT CodeWorker, Worker.Name As Name, Division.Name as Division, Type FROM Worker LEFT JOIN Division ON Division.CodeDivision = Worker.Division;";
+            if(queries.ContainsKey(content))
+                SetTable(queries[content], dg);
             else
-                query = string.Format("SELECT * FROM {0}", content);
-            SetTable(query, dg);
+                SetTable(queries["Default"]+content, dg);
         }
 
     }
