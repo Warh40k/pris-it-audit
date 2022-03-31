@@ -19,15 +19,12 @@
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel Orientation="Vertical" Width="140">
                 <Label Content="Таблицы" HorizontalAlignment="Center"/>
-                <ListBox x:Name="elementList" MinWidth="100" MinHeight="372" Background="#FFB3C6E9" Width="140" HorizontalAlignment="Left" Height="312"/>
+                <ListBox x:Name="elementList" Background="#FFB3C6E9" Width="140" MinWidth="2"/>
             </StackPanel>
             <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0"/>
         </DockPanel>
-        <WrapPanel Margin="100,0,0,0" VerticalAlignment="Bottom" Height="40" ItemHeight="25" ItemWidth="170" Grid.Row="0" HorizontalAlignment="Stretch">
-            <Button Content="Добавить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
-            <Button Content="Удалить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
-            <Button Content="Изменить" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
-            <Button Content="Поиск" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Margin="0,0,0,0"/>
-        </WrapPanel>
+        <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
+            <Button Content="Режим редактирования" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click"/>
+        </Grid>
     </Grid>
 </Window>
