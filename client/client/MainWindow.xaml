@@ -1,12 +1,30 @@
-﻿<Window x:Class="client.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
+        xmlns:OleDb="clr-namespace:System.Data.OleDb;assembly=System.Data" x:Class="client.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip">
     <Grid>
-        
+        <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
+            <MenuItem Header="MenuItem"/>
+            <MenuItem Header="Вид">
+                <MenuItem Header="Таблицы"/>
+                <MenuItem Header="Запросы"/>
+                <MenuItem Header="Отчёты"/>
+            </MenuItem>
+        </Menu>
+        <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
+            <StackPanel Orientation="Vertical" Width="140">
+                <Label Content="Таблицы" HorizontalAlignment="Center"/>
+                <ListBox x:Name="elementList" Background="#FFB3C6E9" Width="140" MinWidth="2"/>
+            </StackPanel>
+            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0"/>
+        </DockPanel>
+        <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
+            <Button Content="Режим редактирования" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click"/>
+        </Grid>
     </Grid>
 </Window>
