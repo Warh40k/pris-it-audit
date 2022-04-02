@@ -20,7 +20,8 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            EditMode em = new EditMode();
+            em.Show();
         }
     }
 }

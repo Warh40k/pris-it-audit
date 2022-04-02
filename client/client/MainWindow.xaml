@@ -18,10 +18,10 @@
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel Orientation="Vertical" Width="140">
-                <Label Content="Таблицы" HorizontalAlignment="Center"/>
+                <Label x:Name="tableLabel" Content="None" HorizontalAlignment="Center"/>
                 <TreeView x:Name="treeView"/>
             </StackPanel>
-            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0"/>
+            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0" Width="560"/>
         </DockPanel>
         <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
             <Button Content="Режим редактирования" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click"/>

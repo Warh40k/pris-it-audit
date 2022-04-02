@@ -35,6 +35,7 @@ namespace client
             con.Close();
             
             dg.ItemsSource = dt.DefaultView;
+            
         }
         public void SetList(TreeView tree)
         {
