@@ -22,7 +22,7 @@ namespace client
 
             {"Office","SELECT Office.Id, Department.Name AS Department, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
         };
-        public static void SetTable(string query, DataGrid dg)
+        public static DataTable MakeQuery(string query)
         {
             OleDbConnection con = new OleDbConnection(conString);
 
@@ -33,11 +33,12 @@ namespace client
             DataTable dt = new DataTable();
             oda.Fill(dt);
             con.Close();
-            
-            dg.ItemsSource = dt.DefaultView;
+
+            return dt;
+//            dg.ItemsSource = dt.DefaultView;
             
         }
-        public void SetList(TreeView tree)
+        public void SetTree(TreeView tree)
         {
             OleDbConnection con = new OleDbConnection(conString);
 
@@ -66,9 +67,10 @@ namespace client
             TreeViewItem item = (TreeViewItem)sender;
             string content = item.Header.ToString();
             if (queries.ContainsKey(content))
-                SetTable(queries[content], dg);
+                dg.ItemsSource = MakeQuery(queries[content]).DefaultView;
             else
-                SetTable(queries["Default"] + content, dg);
+                dg.ItemsSource = MakeQuery(queries["Default"] + content).DefaultView;
+
         }
 
     }

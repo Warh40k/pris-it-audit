@@ -14,7 +14,7 @@ namespace client
         {
             InitializeComponent();
             DbAccess bd = new DbAccess() {dg = dataGrid};
-            bd.SetList(treeView);
+            bd.SetTree(treeView);
 
         }
 

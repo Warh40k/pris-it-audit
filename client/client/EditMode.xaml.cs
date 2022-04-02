@@ -22,8 +22,11 @@ namespace client
         public EditMode()
         {
             InitializeComponent();
-            for(int i = 0; i < 25; i++)
-                wrapPanel.Children.Add(new Button() { Content = string.Format("Проверка" + i), Margin = new Thickness(5)});
+            for(int i = 0; i < 10; i++)
+            {
+                wrapPanel.Children.Add(new Label() { Content = string.Format("Поле" + i), Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Center });
+                wrapPanel.Children.Add(new Button() { Content = string.Format("Кнопка1" + i), Margin = new Thickness(5) });
+            }
         }
     }
 }
