@@ -11,6 +11,7 @@ namespace client
     public partial class MainWindow : Window
     {
         DbAccess db;
+        public delegate void MouseDClick(object sender, System.Windows.Input.MouseButtonEventArgs e);
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
             {"Employee", "SELECT Employee.Id As Id, Employee.Name As Name, Department.Name as Department, Type " +
@@ -28,7 +29,10 @@ namespace client
         {
             InitializeComponent();
             db = new DbAccess() { conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;" };
-            TreeView treeView = db.SetTree("Tables");
+
+            System.Windows.Input.MouseButtonEventHandler clickEvent;
+            clickEvent = Item_MouseDoubleClick;
+            TreeView treeView = db.SetTree("Tables", clickEvent);
             treeStack.Children.Add(treeView);
 
         }
@@ -38,7 +42,7 @@ namespace client
             EditMode em = new EditMode();
             em.Show();
         }
-        private void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TreeViewItem item = (TreeViewItem)sender;
             string content = item.Header.ToString();

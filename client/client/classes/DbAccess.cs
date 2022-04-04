@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Windows.Controls;
@@ -24,7 +25,7 @@ namespace client
             return dview;
             
         }
-        public TreeView SetTree(string branch)
+        public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {
             TreeView tree = new TreeView();
             OleDbConnection con = new OleDbConnection(conString);
@@ -41,7 +42,7 @@ namespace client
             {
                 TreeViewItem item = new TreeViewItem();
                 item.Header = row["TABLE_NAME"].ToString();
-                //item.MouseDoubleClick += Item_MouseDoubleClick;
+                item.MouseDoubleClick += click;
                 treeItem.Items.Add(item);
             }
             tree.Items.Add(treeItem);

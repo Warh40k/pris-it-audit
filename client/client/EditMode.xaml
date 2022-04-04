@@ -8,9 +8,11 @@
         Title="EditMode" Height="350" Width="400" HorizontalAlignment="Center" VerticalAlignment="Center"
         ResizeMode="CanMinimize" HorizontalContentAlignment="Stretch">
     <Grid>
-        <ScrollViewer Margin="0,0,0,30" BorderBrush="Black" BorderThickness="2">
-            <WrapPanel x:Name="wrapPanel" ItemHeight="40" ItemWidth="180" HorizontalAlignment="Stretch"/>
-        </ScrollViewer>
+        <Border Margin="0,0,0,30" BorderBrush="#FF5E5E5E" BorderThickness="0,0,0,1" >
+            <ScrollViewer BorderBrush="Black" BorderThickness="2">
+                <WrapPanel x:Name="wrapPanel" ItemHeight="40" ItemWidth="180" HorizontalAlignment="Stretch"/>
+            </ScrollViewer>
+        </Border>
         <Button Content="Ок" HorizontalAlignment="Center" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="50"/>
         <Button Content="Отмена" HorizontalAlignment="Center" Margin="80,0,0,5" VerticalAlignment="Bottom" Width="50"/>
     </Grid>

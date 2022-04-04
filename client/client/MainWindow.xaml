@@ -19,7 +19,6 @@
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel x:Name="treeStack" Orientation="Vertical" Width="140">
                 <Label x:Name="tableLabel" Content="None" HorizontalAlignment="Center"/>
-                <TreeView x:Name="treeView"/>
             </StackPanel>
             <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0" Width="560"/>
         </DockPanel>
