@@ -17,7 +17,7 @@
             </MenuItem>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
-            <StackPanel Orientation="Vertical" Width="140">
+            <StackPanel x:Name="treeStack" Orientation="Vertical" Width="140">
                 <Label x:Name="tableLabel" Content="None" HorizontalAlignment="Center"/>
                 <TreeView x:Name="treeView"/>
             </StackPanel>
