@@ -13,8 +13,8 @@
                 <WrapPanel x:Name="wrapPanel" ItemHeight="40" ItemWidth="180" HorizontalAlignment="Stretch"/>
             </ScrollViewer>
         </Border>
-        <Button Content="Ок" HorizontalAlignment="Center" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="50"/>
-        <Button Content="Отмена" HorizontalAlignment="Center" Margin="80,0,0,5" VerticalAlignment="Bottom" Width="50"/>
+        <Button Content="Ок" HorizontalAlignment="Center" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="50" Click="Button_Click"/>
+        <Button Content="Отмена" HorizontalAlignment="Center" Margin="80,0,0,5" VerticalAlignment="Bottom" Width="50" Click="Button_Click_1"/>
         <Label x:Name="note_label" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" Width="78" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>

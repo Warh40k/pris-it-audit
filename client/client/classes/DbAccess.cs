@@ -6,11 +6,17 @@ using System.Windows.Controls;
 
 namespace client
 {
-    internal class DbAccess
+    public class DbAccess
     {
         public string conString;
-        
-        public DataView MakeQuery(string query)
+        public List<string> tables;
+
+        public DbAccess(string conString)
+        {
+            this.conString = conString;
+        }
+
+        public DataTable MakeQuery(string query)
         {
             OleDbConnection con = new OleDbConnection(conString);
 
@@ -21,18 +27,17 @@ namespace client
             DataTable dt = new DataTable();
             oda.Fill(dt);
             con.Close();
-            DataView dview = new DataView(dt);
-            return dview;
+            return dt;
             
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {
             TreeView tree = new TreeView();
 
-            List<string> columns = GetColumns(conString);
+            tables = GetTables(conString);
             TreeViewItem treeItem = new TreeViewItem() { Header = branch };
 
-            foreach (string str in columns)
+            foreach (string str in tables)
             {
                 TreeViewItem item = new TreeViewItem();
                 item.Header = str;
@@ -43,9 +48,9 @@ namespace client
 
             return tree;
         }
-        public List<string> GetColumns(string conString)
+        public List<string> GetTables(string conString)
         {
-            List<string> columns = new List<string>();
+            List<string> tables = new List<string>();
             string[] restrictions = new string[4];
             restrictions[3] = "Table";
             OleDbConnection con = new OleDbConnection(conString);
@@ -55,7 +60,14 @@ namespace client
             con.Close();
             
             foreach (DataRow row in dt.Rows)
-                columns.Add(row["TABLE_NAME"].ToString());
+                tables.Add(row["TABLE_NAME"].ToString());
+            return tables;
+        }
+        public List<string> GetColumns(DataTable table)
+        {
+            List<string> columns = new List<string>();
+            foreach (DataColumn column in table.Columns)
+                columns.Add(column.ColumnName);
             return columns;
         }
     }

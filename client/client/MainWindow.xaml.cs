@@ -11,6 +11,7 @@ namespace client
     public partial class MainWindow : Window
     {
         DbAccess db;
+        DataTable currentTable;
         public delegate void MouseDClick(object sender, System.Windows.Input.MouseButtonEventArgs e);
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
@@ -28,18 +29,17 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
-            db = new DbAccess() { conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;" };
+            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;");
 
             System.Windows.Input.MouseButtonEventHandler clickEvent;
             clickEvent = Item_MouseDoubleClick;
             TreeView treeView = db.SetTree("Tables", clickEvent);
             treeStack.Children.Add(treeView);
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            EditMode em = new EditMode();
+            EditMode em = new EditMode(db, currentTable);
             em.Show();
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -47,9 +47,16 @@ namespace client
             TreeViewItem item = (TreeViewItem)sender;
             string content = item.Header.ToString();
             if (queries.ContainsKey(content))
-                dataGrid.ItemsSource = db.MakeQuery(queries[content]);
+            {
+                currentTable = db.MakeQuery(queries[content]);
+                dataGrid.ItemsSource = currentTable.DefaultView;
+            }
             else
-                dataGrid.ItemsSource = db.MakeQuery(queries["Default"] + content);
+            {
+                currentTable = db.MakeQuery(queries["Default"] + content);
+                dataGrid.ItemsSource = currentTable.DefaultView;
+            }
+            tableLabel.Content = content;
         }
     }
 }
