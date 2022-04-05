@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace client
 {
@@ -22,10 +12,12 @@ namespace client
         public EditMode()
         {
             InitializeComponent();
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 25; i++)
             {
-                wrapPanel.Children.Add(new Label() { Content = string.Format("Поле" + i), Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Center });
-                wrapPanel.Children.Add(new Button() { Content = string.Format("Кнопка1" + i), Margin = new Thickness(5) });
+                wrapPanel.Children.Add(new Label() {Content = string.Format("Поле" + i), Margin = new Thickness(5), HorizontalAlignment = HorizontalAlignment.Left });
+                wrapPanel.Children.Add(new TextBox() {Text = string.Format("Значение" + i), MinWidth = 140, Margin = new Thickness(5,5,5,5), HorizontalAlignment = HorizontalAlignment.Left});
+                DbAccess db = new DbAccess {conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;"};
+                db.MakeQuery();
             }
         }
     }

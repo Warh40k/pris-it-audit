@@ -9,11 +9,12 @@
         ResizeMode="CanMinimize" HorizontalContentAlignment="Stretch">
     <Grid>
         <Border Margin="0,0,0,30" BorderBrush="#FF5E5E5E" BorderThickness="0,0,0,1" >
-            <ScrollViewer BorderBrush="Black" BorderThickness="2">
+            <ScrollViewer BorderBrush="Black" BorderThickness="2" HorizontalScrollBarVisibility="Disabled" Margin="0,34,0,0">
                 <WrapPanel x:Name="wrapPanel" ItemHeight="40" ItemWidth="180" HorizontalAlignment="Stretch"/>
             </ScrollViewer>
         </Border>
         <Button Content="Ок" HorizontalAlignment="Center" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="50"/>
         <Button Content="Отмена" HorizontalAlignment="Center" Margin="80,0,0,5" VerticalAlignment="Bottom" Width="50"/>
+        <Label x:Name="note_label" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" Width="78" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>

@@ -20,7 +20,7 @@
             <StackPanel x:Name="treeStack" Orientation="Vertical" Width="140">
                 <Label x:Name="tableLabel" Content="None" HorizontalAlignment="Center"/>
             </StackPanel>
-            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0" Width="560"/>
+            <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0" ColumnWidth="Auto"/>
         </DockPanel>
         <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
             <Button Content="Режим редактирования" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click"/>

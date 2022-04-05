@@ -49,6 +49,10 @@ namespace client
 
             return tree;
         }
+        public List<string> GetColumns(DataTable dt, TreeView tree)
+        {
 
+            return new List<string>();
+        }
     }
 }
