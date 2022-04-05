@@ -16,5 +16,7 @@
         <Button Content="Ок" HorizontalAlignment="Center" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="50" Click="Button_Click"/>
         <Button Content="Отмена" HorizontalAlignment="Center" Margin="80,0,0,5" VerticalAlignment="Bottom" Width="50" Click="Button_Click_1"/>
         <Label x:Name="note_label" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" Width="78" HorizontalContentAlignment="Center"/>
+        <Button x:Name="backward_button" Content="Назад" HorizontalAlignment="Right" Margin="0,0,10,5" VerticalAlignment="Bottom" Click="backward_button_Click"/>
+        <Button x:Name="forward_button" Content="Вперед" HorizontalAlignment="Right" Margin="0,0,51,5" VerticalAlignment="Bottom" Click="forward_button_Click"/>
     </Grid>
 </Window>
