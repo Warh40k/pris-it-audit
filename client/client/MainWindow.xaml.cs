@@ -19,7 +19,7 @@ namespace client
 
             {"Default", "SELECT * FROM "},
 
-            {"Position", "SELECT * FROM [Position] ORDER BY Id" },
+            {"Position", "SELECT * FROM [Position] ORDER BY Id"},
 
             {"Infrastructure", "SELECT Infrastructure.Id AS Id, Inventory.Name AS Name, Infrastructure.DateRelease AS Released, Infrastructure.DatePurchase AS Purchased, Office.Name AS Office, Employee.Name AS Responsible, Infrastructure.Price AS Price FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
 
