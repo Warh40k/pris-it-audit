@@ -20,12 +20,15 @@ namespace client
             InitializeComponent();
             this.db = db;
             this.table = table;
-            columns = db.GetColumns(table);
             DataRowCollection row = table.Rows;
+
+            columns = db.GetColumns(table);
+            int i = 0;
+
             foreach(string column in columns)
             {
                 wrapPanel.Children.Add(new Label() { Content = column, Margin = new Thickness(5), MaxWidth = 120});
-                wrapPanel.Children.Add(new TextBox() {Margin = new Thickness(5), MaxWidth = 120});
+                wrapPanel.Children.Add(new TextBox() {Text = row[0][i++].ToString(), Margin = new Thickness(5), MaxWidth = 120});
             }
         }
 
