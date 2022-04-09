@@ -35,12 +35,13 @@ namespace client
             OleDbConnection con = new OleDbConnection(conString);
             con.Open();
 
-            OleDbCommand command = new OleDbCommand("UPDATE Employee SET Name = @Name WHERE Employee.Id = 1", con);
+            OleDbCommand command = new OleDbCommand(query, con);
+            //OleDbCommand command = new OleDbCommand(string.Format("UPDATE {0} SET Name = @Name WHERE {), con);
 
-            //foreach(OleDbParameter parameter in parameters)
-            //  command.Parameters.Add(parameter);
+            foreach(OleDbParameter parameter in parameters)
+                command.Parameters.Add(parameter);
             //command.Parameters.Add(new OleDbParameter("@Id", 1));
-            command.Parameters.Add(new OleDbParameter("@Name", "Антон"));
+            //command.Parameters.Add(new OleDbParameter("@table", "Employee"));
             command.ExecuteNonQuery();
             con.Close();
         }

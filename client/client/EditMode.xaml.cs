@@ -49,23 +49,24 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder query = new StringBuilder(string.Format("INSERT INTO @table VALUES ("));
-            List<OleDbParameter> parameters = new List<OleDbParameter>() {new OleDbParameter("@table", table.TableName)};
-            for (int i = 0; i < wrapPanel.Children.Count; i=i+2)
+            StringBuilder query = new StringBuilder(string.Format("UPDATE {0} SET ", table.TableName));
+
+            List<OleDbParameter> parameters = new List<OleDbParameter>(); //{new OleDbParameter("@table", table.TableName)};
+            for (int i = 2; i < wrapPanel.Children.Count - 2; i=i+2)
             {
                 string strValue = ((TextBox)wrapPanel.Children[i + 1]).Text;
                 double value;
-                string field = "@" + ((Label)wrapPanel.Children[i]).Content;
+                string field = ((Label)wrapPanel.Children[i]).Content.ToString();
                 bool isInt = double.TryParse(strValue, out value);
-                if (isInt == true)
-                    parameters.Add(new OleDbParameter(field, value));
-                else
+                if (isInt == false)
+                    //parameters.Add(new OleDbParameter(field, value));
+                //else
                     parameters.Add(new OleDbParameter(field, strValue));
 
-                query.Append(field + ",");
+                query.Append(field + " = @" + field + ",");
             }
             query.Remove(query.Length - 1, 1);
-            query.Append(");");
+            query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
 
             db.InsertQuery(query.ToString(), parameters);
 
