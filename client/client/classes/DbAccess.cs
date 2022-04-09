@@ -16,7 +16,7 @@ namespace client
             this.conString = conString;
         }
 
-        public DataTable MakeQuery(string query)
+        public DataTable SelectQuery(string query)
         {
             OleDbConnection con = new OleDbConnection(conString);
 
@@ -24,11 +24,25 @@ namespace client
             OleDbCommand command = new OleDbCommand(query, con);
             OleDbDataAdapter oda = new OleDbDataAdapter(command);
 
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable(); 
             oda.Fill(dt);
             con.Close();
             return dt;
             
+        }
+        public void InsertQuery(string query, List<OleDbParameter> parameters)
+        {
+            OleDbConnection con = new OleDbConnection(conString);
+            con.Open();
+
+            OleDbCommand command = new OleDbCommand("UPDATE Employee SET Name = @Name WHERE Employee.Id = 1", con);
+
+            //foreach(OleDbParameter parameter in parameters)
+            //  command.Parameters.Add(parameter);
+            //command.Parameters.Add(new OleDbParameter("@Id", 1));
+            command.Parameters.Add(new OleDbParameter("@Name", "Антон"));
+            command.ExecuteNonQuery();
+            con.Close();
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {

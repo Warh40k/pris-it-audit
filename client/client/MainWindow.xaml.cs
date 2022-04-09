@@ -29,7 +29,7 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
-            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;");
+            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=DataBase.accdb;");
 
             System.Windows.Input.MouseButtonEventHandler clickEvent;
             clickEvent = Item_MouseDoubleClick;
@@ -48,12 +48,13 @@ namespace client
             string content = item.Header.ToString();
             if (queries.ContainsKey(content))
             {
-                currentTable = db.MakeQuery(queries[content]);
+                currentTable = db.SelectQuery(queries[content]);
+                currentTable.TableName = content;
                 dataGrid.ItemsSource = currentTable.DefaultView;
             }
             else
             {
-                currentTable = db.MakeQuery(queries["Default"] + content);
+                currentTable = db.SelectQuery(queries["Default"] + content);
                 dataGrid.ItemsSource = currentTable.DefaultView;
             }
             tableLabel.Content = content;
