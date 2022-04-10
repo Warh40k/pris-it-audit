@@ -43,16 +43,16 @@ namespace client
             for (int i = 1; i < columns.Count; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                wrapPanel.Children.Add(new TextBox() { Text = rows[id][i++].ToString(), Margin = new Thickness(5), MaxWidth = 120 });
+                wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120 });
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder query = new StringBuilder(string.Format("UPDATE {0} SET ", table.TableName));
+            StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
 
             List<OleDbParameter> parameters = new List<OleDbParameter>(); //{new OleDbParameter("@table", table.TableName)};
-            for (int i = 2; i < wrapPanel.Children.Count - 2; i=i+2)
+            for (int i = 2; i < wrapPanel.Children.Count; i=i+2)
             {
                 string strValue = ((TextBox)wrapPanel.Children[i + 1]).Text;
                 double value;

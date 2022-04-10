@@ -49,7 +49,6 @@ namespace client
             if (queries.ContainsKey(content))
             {
                 currentTable = db.SelectQuery(queries[content]);
-                currentTable.TableName = content;
                 dataGrid.ItemsSource = currentTable.DefaultView;
             }
             else
@@ -57,6 +56,7 @@ namespace client
                 currentTable = db.SelectQuery(queries["Default"] + content);
                 dataGrid.ItemsSource = currentTable.DefaultView;
             }
+            currentTable.TableName = content;
             tableLabel.Content = content;
         }
     }
