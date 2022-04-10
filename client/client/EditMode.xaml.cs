@@ -55,10 +55,10 @@ namespace client
             for (int i = 2; i < wrapPanel.Children.Count; i=i+2)
             {
                 string strValue = ((TextBox)wrapPanel.Children[i + 1]).Text;
-                double value;
+                //double value;
                 string field = ((Label)wrapPanel.Children[i]).Content.ToString();
-                bool isInt = double.TryParse(strValue, out value);
-                if (isInt == false)
+                //bool isInt = double.TryParse(strValue, out value);
+                //if (isInt == false)
                     //parameters.Add(new OleDbParameter(field, value));
                 //else
                     parameters.Add(new OleDbParameter(field, strValue));
