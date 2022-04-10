@@ -50,7 +50,7 @@ namespace client
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
-
+            bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>(); //{new OleDbParameter("@table", table.TableName)};
             for (int i = 2; i < wrapPanel.Children.Count; i=i+2)
             {
@@ -61,15 +61,19 @@ namespace client
                 //if (isInt == false)
                     //parameters.Add(new OleDbParameter(field, value));
                 //else
+                if(strValue != table.Rows[currentId][field].ToString())
+                {
                     parameters.Add(new OleDbParameter(field, strValue));
-
-                query.Append(field + " = @" + field + ",");
+                    query.Append(field + " = @" + field + ",");
+                    isEmpty = false;
+                }
             }
-            query.Remove(query.Length - 1, 1);
-            query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
-
-            db.InsertQuery(query.ToString(), parameters);
-
+            if(isEmpty == false)
+            {
+                query.Remove(query.Length - 1, 1);
+                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
+                db.InsertQuery(query.ToString(), parameters);
+            }
             Close();
         }
 
