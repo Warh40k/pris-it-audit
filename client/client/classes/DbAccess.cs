@@ -10,7 +10,7 @@ namespace client
     {
         public string conString;
         public List<string> tables;
-        OleDbConnection con;
+        public OleDbConnection con;
         OleDbDataAdapter oda;
         public DbAccess(string conString)
         {
@@ -27,26 +27,11 @@ namespace client
 
             DataTable dt = new DataTable(); 
             oda.Fill(dt);
+            foreach (DataColumn column in dt.Columns)
+                column.ColumnName.ToString();
             con.Close();
             return dt;
             
-        }
-        public void InsertQuery(string query, List<OleDbParameter> parameters)
-        {
-            con.Open();
-
-            OleDbCommand command = new OleDbCommand(query, con);
-            //OleDbCommand command = new OleDbCommand("UPDATE [Employee] SET Name = @Name WHERE Employee.Id = 1", con);
-            //OleDbCommand command = new OleDbCommand(string.Format("UPDATE {0} SET Name = @Name WHERE {), con);
-
-            foreach(OleDbParameter parameter in parameters)
-                command.Parameters.Add(parameter);
-
-            //command.Parameters.Add(new OleDbParameter("@Id", 1));
-            //command.Parameters.Add(new OleDbParameter("@table", "Employee"));
-            //command.Parameters.Add(new OleDbParameter("@Name", "Дима"));
-            command.ExecuteNonQuery();
-            con.Close();
         }
         public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
@@ -92,12 +77,18 @@ namespace client
                 tables.Add(row["TABLE_NAME"].ToString());
             return tables;
         }
+        
         public List<string> GetColumns(DataTable table)
         {
             List<string> columns = new List<string>();
             foreach (DataColumn column in table.Columns)
                 columns.Add(column.ColumnName);
             return columns;
+        }
+        public void FixNames(ref DataTable table)
+        {
+            for(int i = 0; i < table.Columns.Count;i++)
+                table.Columns[i].ColumnName = table.Columns[i].ColumnName.Replace('.', '_');
         }
     }
 }
