@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
-using System.Data.SqlClient;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System;
 
 
 namespace client
@@ -52,28 +52,34 @@ namespace client
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>(); //{new OleDbParameter("@table", table.TableName)};
-            for (int i = 2; i < wrapPanel.Children.Count; i=i+2)
+            for (int i = 1; i < table.Columns.Count; i++)
             {
-                string strValue = ((TextBox)wrapPanel.Children[i + 1]).Text;
+                string value = ((TextBox)wrapPanel.Children[2*i+1]).Text;
                 //double value;
-                string field = ((Label)wrapPanel.Children[i]).Content.ToString();
+                string field = table.Columns[i].ColumnName;
                 //bool isInt = double.TryParse(strValue, out value);
                 //if (isInt == false)
                     //parameters.Add(new OleDbParameter(field, value));
                 //else
-                if(strValue != table.Rows[currentId][field].ToString())
+                if(value != table.Rows[currentId][field].ToString())
                 {
-                    parameters.Add(new OleDbParameter(field, strValue));
-                    query.Append(field + " = @" + field + ",");
-                    isEmpty = false;
+                    //                 if(DateTime.TryParse(strValue, out DateTime date))
+                    //                     parameters.Add(new OleDbParameter(field, date));
+                    //                 else
+                                       parameters.Add(new OleDbParameter(field, value));
+                                       query.Append(field + " = @" + field + ",");
+                    //                   isEmpty = false;
+                    table.Rows[currentId][field] = value;
                 }
             }
             if(isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
-                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
                 db.InsertQuery(query.ToString(), parameters);
             }
+            query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
+            table.Rows[0][1] = "Сервер";
+            db.Update(table, query.ToString());
             Close();
         }
 

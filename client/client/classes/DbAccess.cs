@@ -10,19 +10,20 @@ namespace client
     {
         public string conString;
         public List<string> tables;
-
+        OleDbConnection con;
+        OleDbDataAdapter oda;
         public DbAccess(string conString)
         {
             this.conString = conString;
+            con = new OleDbConnection(conString);
+            oda = new OleDbDataAdapter();
         }
 
         public DataTable SelectQuery(string query)
         {
-            OleDbConnection con = new OleDbConnection(conString);
-
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
-            OleDbDataAdapter oda = new OleDbDataAdapter(command);
+            oda.SelectCommand = command;
 
             DataTable dt = new DataTable(); 
             oda.Fill(dt);
@@ -32,7 +33,6 @@ namespace client
         }
         public void InsertQuery(string query, List<OleDbParameter> parameters)
         {
-            OleDbConnection con = new OleDbConnection(conString);
             con.Open();
 
             OleDbCommand command = new OleDbCommand(query, con);
@@ -46,6 +46,17 @@ namespace client
             //command.Parameters.Add(new OleDbParameter("@table", "Employee"));
             //command.Parameters.Add(new OleDbParameter("@Name", "Дима"));
             command.ExecuteNonQuery();
+            con.Close();
+        }
+        public void Update(DataTable table, string query)
+        {
+            con.Open();
+
+            OleDbCommand selectCommand = new OleDbCommand("SELECT Infrastructure.Id AS Id, Inventory.Name AS Name, Infrastructure.DateRelease AS Released, Infrastructure.DatePurchase AS Purchased, Office.Name AS Office, Employee.Name AS Responsible, Infrastructure.Price AS Price FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;", con);
+            OleDbCommand updateCommand = new OleDbCommand("UPDATE Infrastructure SET Price = 10 WHERE Infrastructure.Id = 1", con);
+            oda.SelectCommand = selectCommand;
+            oda.UpdateCommand = updateCommand;
+            oda.Update(table); // Таблица обновилась
             con.Close();
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
@@ -71,7 +82,6 @@ namespace client
             List<string> tables = new List<string>();
             string[] restrictions = new string[4];
             restrictions[3] = "Table";
-            OleDbConnection con = new OleDbConnection(conString);
 
             con.Open();
             DataTable dt = con.GetSchema("Tables", restrictions);
