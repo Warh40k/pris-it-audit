@@ -68,18 +68,20 @@ namespace client
                     //                 else
                                        parameters.Add(new OleDbParameter(field, value));
                                        query.Append(field + " = @" + field + ",");
-                    //                   isEmpty = false;
-                    table.Rows[currentId][field] = value;
+                                       isEmpty = false;
+                    //table.Rows[currentId][field] = value;
                 }
             }
             if(isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
-                db.InsertQuery(query.ToString(), parameters);
+                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
+                db.Update(table, query.ToString(), parameters);
+
+                //db.InsertQuery(query.ToString(), parameters);
             }
-            query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
-            table.Rows[0][1] = "Сервер";
-            db.Update(table, query.ToString());
+            
+            //table.Rows[0][1] = "Сервер";
             Close();
         }
 
