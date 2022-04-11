@@ -51,25 +51,16 @@ namespace client
         {
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
-            List<OleDbParameter> parameters = new List<OleDbParameter>(); //{new OleDbParameter("@table", table.TableName)};
+            List<OleDbParameter> parameters = new List<OleDbParameter>();
             for (int i = 1; i < table.Columns.Count; i++)
             {
                 string value = ((TextBox)wrapPanel.Children[2*i+1]).Text;
-                //double value;
                 string field = table.Columns[i].ColumnName;
-                //bool isInt = double.TryParse(strValue, out value);
-                //if (isInt == false)
-                    //parameters.Add(new OleDbParameter(field, value));
-                //else
                 if(value != table.Rows[currentId][field].ToString())
                 {
-                    //                 if(DateTime.TryParse(strValue, out DateTime date))
-                    //                     parameters.Add(new OleDbParameter(field, date));
-                    //                 else
-                                       parameters.Add(new OleDbParameter(field, value));
-                                       query.Append(field + " = @" + field + ",");
-                                       isEmpty = false;
-                    //table.Rows[currentId][field] = value;
+                    parameters.Add(new OleDbParameter(field, value));
+                    query.Append(field + " = @" + field + ",");
+                    isEmpty = false;
                 }
             }
             if(isEmpty == false)
@@ -77,11 +68,8 @@ namespace client
                 query.Remove(query.Length - 1, 1);
                 query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
                 db.Update(table, query.ToString(), parameters);
-
-                //db.InsertQuery(query.ToString(), parameters);
             }
             
-            //table.Rows[0][1] = "Сервер";
             Close();
         }
 

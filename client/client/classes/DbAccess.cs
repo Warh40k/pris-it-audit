@@ -51,19 +51,13 @@ namespace client
         public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
             con.Open();
-
-            //OleDbCommand selectCommand = new OleDbCommand("SELECT Infrastructure.Id AS Id, Inventory.Name AS Name, Infrastructure.DateRelease AS Released, Infrastructure.DatePurchase AS Purchased, Office.Name AS Office, Employee.Name AS Responsible, Infrastructure.Price AS Price FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;", con);
             OleDbCommand updateCommand = new OleDbCommand(query, con);
-            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Price = 200 WHERE Infrastructure.Id = 1", con);
             oda.UpdateCommand = updateCommand;
             foreach (OleDbParameter parameter in parameters)
             {
-                oda.UpdateCommand.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                oda.UpdateCommand.Parameters.Add(parameter);
             }
-            // oda.AcceptChangesDuringUpdate = true;
-            //oda.UpdateCommand.ExecuteNonQuery();
-            //table.Rows[0]["Price"] = 5000;
-            oda.Update(table);
+            oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
