@@ -19,13 +19,14 @@ namespace client
         public int currentId = 0;
         MainWindow.GridUpdate UpdateGrid;
 
-        public EditMode(DbAccess db, DataTable table, MainWindow.GridUpdate UpdateGrid = null)
+        public EditMode(DbAccess db, DataTable table, MainWindow.GridUpdate UpdateGrid = null, int currentId = 0)
         {
             InitializeComponent();
 
             this.db = db;
             this.table = table;
             this.UpdateGrid = UpdateGrid;
+            this.currentId = currentId;
             ChangeId(currentId);
         }
         void ChangeId(int id)

@@ -40,7 +40,10 @@ namespace client
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GridUpdate updateGrid = UpdateGrid;
-            EditMode em = new EditMode(db, currentTable, updateGrid);
+            var selected = dataGrid.SelectedIndex;
+            if (selected == -1)
+                selected = 0;
+            EditMode em = new EditMode(db, currentTable, updateGrid, selected);
             em.Show();
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
