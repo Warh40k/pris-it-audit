@@ -17,13 +17,15 @@ namespace client
         public DataTable table;
         List<string> columns;
         public int currentId = 0;
+        MainWindow.GridUpdate UpdateGrid;
 
-        public EditMode(DbAccess db, DataTable table)
+        public EditMode(DbAccess db, DataTable table, MainWindow.GridUpdate UpdateGrid = null)
         {
             InitializeComponent();
 
             this.db = db;
             this.table = table;
+            this.UpdateGrid = UpdateGrid;
             ChangeId(currentId);
         }
         void ChangeId(int id)
@@ -108,7 +110,7 @@ namespace client
             }
             
             Close();
-            
+            UpdateGrid(table.TableName);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

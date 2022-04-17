@@ -39,7 +39,8 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            EditMode em = new EditMode(db, currentTable);
+            GridUpdate updateGrid = UpdateGrid;
+            EditMode em = new EditMode(db, currentTable, updateGrid);
             em.Show();
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
