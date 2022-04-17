@@ -34,13 +34,13 @@ namespace client
             wrapPanel.Children.Clear();
             DataRowCollection rows = table.Rows;
 
-            columns = db.GetColumns(table);
+            string[] columns = db.GetColumnNames(table.TableName);
             note_label.Content = "Запись" + rows[id][0];
 
             wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
             wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
-            for (int i = 1; i < columns.Count; i++)
+            for (int i = 1; i < columns.Length; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
                 string columnName = table.Columns[i].ColumnName;
@@ -51,7 +51,7 @@ namespace client
                     int selectedIndex = 0;
                     ComboBox combo = new ComboBox() { Text = columnName, Margin = new Thickness(5), MaxWidth = 120 };
 
-                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,{0} FROM {1}", columnSplit[1], columnSplit[0]), db.con);
+                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
                     DataTable outerColumnValues = new DataTable();
                     db.con.Open();
                     outerAdapter.Fill(outerColumnValues);

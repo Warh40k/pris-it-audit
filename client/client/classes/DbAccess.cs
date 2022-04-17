@@ -80,21 +80,18 @@ namespace client
             return tables;
         }
         
-        public List<string> GetColumns(DataTable table)
+        public string[] GetColumnNames(string tableName)
         {
-            List<string> columns = new List<string>();
-            foreach (DataColumn column in table.Columns)
-                columns.Add(column.ColumnName);
-            return columns;
-        }
-        public DataRow[] GetColumns(string tableName)
-        {
+ 
             DataTable schemaTable = new DataTable();
             con.Open();
             DataTable schema = con.GetSchema("Columns");
             con.Close();
-            var columns = schema.Select("TABLE_NAME ='" + tableName + "'");
-            return columns;
+            DataRow[] rows = schema.Select("TABLE_NAME ='" + tableName + "'");
+            string[] columnNames = new string[rows.Count()];
+            foreach (DataRow row in rows)
+                columnNames[int.Parse(row["ORDINAL_POSITION"].ToString()) - 1] = row["COLUMN_NAME"].ToString();
+            return columnNames;
         }
     }
 }

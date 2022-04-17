@@ -15,16 +15,16 @@ namespace client
         public delegate void MouseDClick(object sender, System.Windows.Input.MouseButtonEventArgs e);
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
-            {"Employee", "SELECT Employee.Id, Employee.Name, Department.Name, Type " +
-                "FROM Employee LEFT JOIN Department ON Department.Id = Employee.Department ORDER BY Employee.Id;"},
+            {"Employee", "SELECT Employee.Id, Employee.Name AS Name, Employee.Surname, [Position].Name, Department.Name " +
+                "FROM Department RIGHT JOIN ([Position] RIGHT JOIN Employee ON [Position].[Id] = Employee.[Position]) ON Department.[Id] = Employee.[Department];"},
 
             {"Default", "SELECT * FROM "},
 
             {"Position", "SELECT * FROM [Position] ORDER BY Id"},
 
-            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.Released, Infrastructure.Purchased,  Infrastructure.Price, Office.Name, Employee.Name FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
+            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.Released, Infrastructure.Purchased,  Infrastructure.Price, Infrastructure.Units, Office.Name, Employee.Name FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
 
-            {"Office","SELECT Office.Id, Department.Name, Office.Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
+            {"Office","SELECT Office.Id, Department.Name, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
         };
         public MainWindow()
         {
