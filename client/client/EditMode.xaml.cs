@@ -82,13 +82,22 @@ namespace client
             for (int i = 1; i < table.Columns.Count; i++)
             {
                 var item = wrapPanel.Children[2 * i + 1];
-                if (item.GetType().ToString() == "TextBox")
+                string type = item.GetType().ToString();
+                if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
                 else
                     value = ((ComboBox)item).SelectedIndex.ToString();
 
                 field = table.Columns[i].ColumnName;
-                if (value != table.Rows[currentId][field].ToString())
+
+                if (type == "System.Windows.Controls.ComboBox")
+                {
+                    parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.Integer });
+
+                    query.Append(field + " = @" + field + ",");
+                    isEmpty = false;
+                }
+                else if (value != table.Rows[currentId][field].ToString())
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     query.Append(field + " = @" + field + ",");
