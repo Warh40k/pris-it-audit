@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 using System;
 
 
@@ -27,7 +28,6 @@ namespace client
             this.table = table;
             this.currentId = currentId;
             ChangeId(currentId);
-
         }
         void ChangeId(int id)
         {
@@ -38,12 +38,16 @@ namespace client
             note_label.Content = "Запись" + rows[id][0];
 
             wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
-            wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsReadOnly = true });
+            wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
             for (int i = 1; i < columns.Count; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120 });
+                string[] columnSplit = table.Columns[i].ColumnName.Split('_');
+                bool notJoined = true;
+                if (columnSplit.Length > 1)
+                    notJoined = false;
+                wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
         }
 
