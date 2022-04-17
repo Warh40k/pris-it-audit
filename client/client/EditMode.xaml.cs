@@ -94,13 +94,13 @@ namespace client
                 {
                     parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.Integer });
 
-                    query.Append(field + " = @" + field + ",");
+                    query.Append(field + " = ?,");
                     isEmpty = false;
                 }
                 else if (value != table.Rows[currentId][field].ToString())
                 {
                     parameters.Add(new OleDbParameter(field, value));
-                    query.Append(field + " = @" + field + ",");
+                    query.Append(field + " = ?,");
                     isEmpty = false;
                 }
             }

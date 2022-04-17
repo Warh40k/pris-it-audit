@@ -51,7 +51,7 @@ namespace client
         {
             TreeView tree = new TreeView();
 
-            tables = GetTables(conString);
+            tables = GetTables();
             TreeViewItem treeItem = new TreeViewItem() { Header = branch };
 
             foreach (string str in tables)
@@ -65,7 +65,7 @@ namespace client
 
             return tree;
         }
-        public List<string> GetTables(string conString)
+        public List<string> GetTables()
         {
             List<string> tables = new List<string>();
             string[] restrictions = new string[4];

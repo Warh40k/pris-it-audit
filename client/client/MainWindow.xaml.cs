@@ -22,7 +22,7 @@ namespace client
 
             {"Position", "SELECT * FROM [Position] ORDER BY Id"},
 
-            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.DateRelease, Infrastructure.DatePurchase, Office.Name, Employee.Name, Infrastructure.Price FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
+            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.Released, Infrastructure.Purchased,  Infrastructure.Price, Office.Name, Employee.Name FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
 
             {"Office","SELECT Office.Id, Department.Name, Office.Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
         };
