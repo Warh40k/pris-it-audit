@@ -10,11 +10,7 @@
     <Grid>
         <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
             <MenuItem Header="MenuItem"/>
-            <MenuItem Header="Вид">
-                <MenuItem Header="Таблицы"/>
-                <MenuItem Header="Запросы"/>
-                <MenuItem Header="Отчёты"/>
-            </MenuItem>
+            <MenuItem Header="Обновить" Click="MenuItem_Click"/>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel x:Name="treeStack" Orientation="Vertical" Width="140">

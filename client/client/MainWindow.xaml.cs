@@ -12,7 +12,8 @@ namespace client
     {
         DbAccess db;
         DataTable currentTable;
-        public delegate void MouseDClick(object sender, System.Windows.Input.MouseButtonEventArgs e);
+        public delegate void GridUpdate(string tableName);
+
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
             {"Employee", "SELECT Employee.Id, Employee.Name AS Name, Employee.Surname, [Position].Name, Department.Name " +
@@ -45,6 +46,10 @@ namespace client
         {
             TreeViewItem item = (TreeViewItem)sender;
             string tableName = item.Header.ToString();
+            UpdateGrid(tableName);
+        }
+        public void UpdateGrid(string tableName)
+        {
             if (queries.ContainsKey(tableName))
                 currentTable = db.SelectQuery(queries[tableName]);
             else
@@ -60,7 +65,11 @@ namespace client
             dataGrid.ItemsSource = currentTable.DefaultView;
             currentTable.TableName = tableName;
             tableLabel.Content = tableName;
+        }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateGrid(currentTable.TableName);
         }
     }
 }
