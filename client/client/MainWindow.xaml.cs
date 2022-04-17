@@ -44,19 +44,23 @@ namespace client
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TreeViewItem item = (TreeViewItem)sender;
-            string content = item.Header.ToString();
-            if (queries.ContainsKey(content))
-                currentTable = db.SelectQuery(queries[content]);
+            string tableName = item.Header.ToString();
+            if (queries.ContainsKey(tableName))
+                currentTable = db.SelectQuery(queries[tableName]);
             else
-                currentTable = db.SelectQuery(queries["Default"] + content);
+                currentTable = db.SelectQuery(queries["Default"] + tableName);
 
-            //DataTable table4grid = currentTable; 
+            string[] columns = db.GetColumnNames(tableName);
             for (int i = 0; i < currentTable.Columns.Count; i++)
-                currentTable.Columns[i].ColumnName = currentTable.Columns[i].ColumnName.Replace('.', '_');
+            {
+                currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
+                currentTable.Columns[i].ColumnName = columns[i];
+            }
 
             dataGrid.ItemsSource = currentTable.DefaultView;
-            currentTable.TableName = content;
-            tableLabel.Content = content;
+            currentTable.TableName = tableName;
+            tableLabel.Content = tableName;
+
         }
     }
 }

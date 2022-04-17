@@ -38,12 +38,15 @@ namespace client
         public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
             con.Open();
+            
             OleDbCommand updateCommand = new OleDbCommand(query, con);
             oda.UpdateCommand = updateCommand;
             foreach (OleDbParameter parameter in parameters)
             {
                 oda.UpdateCommand.Parameters.Add(parameter);
             }
+            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Infrastructure.Name = 3 WHERE Infrastructure.Id = 1", con);
+            //oda.UpdateCommand = updateCommand;
             oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
         }

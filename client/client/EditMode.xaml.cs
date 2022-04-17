@@ -43,7 +43,7 @@ namespace client
             for (int i = 1; i < columns.Length; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                string columnName = table.Columns[i].ColumnName;
+                string columnName = table.Columns[i].Caption;
                 string[] columnSplit = columnName.Split('_');
                 bool notJoined = true;
                 if (columnSplit.Length > 1)
@@ -86,21 +86,20 @@ namespace client
                 if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
                 else
-                    value = ((ComboBox)item).SelectedIndex.ToString();
+                    value = (((ComboBox)item).SelectedIndex + 1).ToString();
 
                 field = table.Columns[i].ColumnName;
 
                 if (type == "System.Windows.Controls.ComboBox")
                 {
-                    parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.Integer });
-
-                    query.Append(field + " = ?,");
+                    parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.BigInt });
+                    query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
                 else if (value != table.Rows[currentId][field].ToString())
                 {
                     parameters.Add(new OleDbParameter(field, value));
-                    query.Append(field + " = ?,");
+                    query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
             }
