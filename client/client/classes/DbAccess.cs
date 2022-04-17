@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -12,6 +13,7 @@ namespace client
         public List<string> tables;
         public OleDbConnection con;
         OleDbDataAdapter oda;
+
         public DbAccess(string conString)
         {
             this.conString = conString;
@@ -85,10 +87,14 @@ namespace client
                 columns.Add(column.ColumnName);
             return columns;
         }
-        public void FixNames(ref DataTable table)
+        public DataRow[] GetColumns(string tableName)
         {
-            for(int i = 0; i < table.Columns.Count;i++)
-                table.Columns[i].ColumnName = table.Columns[i].ColumnName.Replace('.', '_');
+            DataTable schemaTable = new DataTable();
+            con.Open();
+            DataTable schema = con.GetSchema("Columns");
+            con.Close();
+            var columns = schema.Select("TABLE_NAME ='" + tableName + "'");
+            return columns;
         }
     }
 }

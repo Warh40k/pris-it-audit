@@ -43,24 +43,52 @@ namespace client
             for (int i = 1; i < columns.Count; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                string[] columnSplit = table.Columns[i].ColumnName.Split('_');
+                string columnName = table.Columns[i].ColumnName;
+                string[] columnSplit = columnName.Split('_');
                 bool notJoined = true;
                 if (columnSplit.Length > 1)
+                {
+                    int selectedIndex = 0;
+                    ComboBox combo = new ComboBox() { Text = columnName, Margin = new Thickness(5), MaxWidth = 120 };
+
+                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,{0} FROM {1}", columnSplit[1], columnSplit[0]), db.con);
+                    DataTable outerColumnValues = new DataTable();
+                    db.con.Open();
+                    outerAdapter.Fill(outerColumnValues);
+                    db.con.Close();
+                    for (int j = 0; j < outerColumnValues.Rows.Count;j++)
+                    {
+                        string value = outerColumnValues.Rows[j][1].ToString();
+                        if (value == rows[id][i].ToString())
+                            selectedIndex = j;
+                        combo.Items.Add(new ComboBoxItem() { Content = value }) ;
+                    }
+
+                    combo.SelectedIndex = selectedIndex;
+                    wrapPanel.Children.Add(combo);
                     notJoined = false;
-                wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
+                }
+                else
+                    wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            string value, field;
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
             for (int i = 1; i < table.Columns.Count; i++)
             {
-                string value = ((TextBox)wrapPanel.Children[2*i+1]).Text;
-                string field = table.Columns[i].ColumnName;
-                if(value != table.Rows[currentId][field].ToString())
+                var item = wrapPanel.Children[2 * i + 1];
+                if (item.GetType().ToString() == "TextBox")
+                    value = ((TextBox)item).Text;
+                else
+                    value = ((ComboBox)item).SelectedIndex.ToString();
+
+                field = table.Columns[i].ColumnName;
+                if (value != table.Rows[currentId][field].ToString())
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     query.Append(field + " = @" + field + ",");
