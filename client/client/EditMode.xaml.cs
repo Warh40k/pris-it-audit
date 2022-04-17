@@ -10,23 +10,20 @@ using System;
 
 namespace client
 {
-    /// <summary>
-    /// Логика взаимодействия для EditMode.xaml
-    /// </summary>
+
     public partial class EditMode : Window
     {
         public DbAccess db;
         public DataTable table;
         List<string> columns;
-        public int currentId;
+        public int currentId = 0;
 
-        public EditMode(DbAccess db, DataTable table, int currentId = 0)
+        public EditMode(DbAccess db, DataTable table)
         {
             InitializeComponent();
 
             this.db = db;
             this.table = table;
-            this.currentId = currentId;
             ChangeId(currentId);
         }
         void ChangeId(int id)
@@ -35,7 +32,7 @@ namespace client
             DataRowCollection rows = table.Rows;
 
             string[] columns = db.GetColumnNames(table.TableName);
-            note_label.Content = "Запись" + rows[id][0];
+            note_label.Content = string.Format("Запись {0}", id + 1);
 
             wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
             wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
@@ -106,7 +103,7 @@ namespace client
             if(isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
-                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, currentId + 1));
+                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, table.Rows[currentId][0]));
                 db.Update(table, query.ToString(), parameters);
             }
             
