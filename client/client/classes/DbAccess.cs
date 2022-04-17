@@ -1,77 +1,100 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Windows.Controls;
 
 namespace client
 {
-    internal class DbAccess
+    public class DbAccess
     {
-        static string conString = "Provider=Microsoft.ACE.OLEDB.16.0;Data Source=DataBase.accdb;";
-        public DataGrid dg;
-        Dictionary<string, string> queries = new Dictionary<string, string>()
+        public string conString;
+        public List<string> tables;
+        public OleDbConnection con;
+        OleDbDataAdapter oda;
+
+        public DbAccess(string conString)
         {
-            {"Employee", "SELECT Employee.Id As Id, Employee.Name As Name, Department.Name as Department, Type " +
-                "FROM Employee LEFT JOIN Department ON Department.Id = Employee.Department;"},
+            this.conString = conString;
+            con = new OleDbConnection(conString);
+            oda = new OleDbDataAdapter();
+        }
 
-            {"Default", "SELECT * FROM "},
-
-            {"Position", "SELECT * FROM [Position]" },
-
-            {"Infrastructure", "SELECT Infrastructure.Id AS Id, Inventory.Name AS Name, " +
-                "Infrastructure.DateRelease AS Released, Infrastructure.DatePurchase AS Purchased, " +
-                "Office.Name AS Office, Employee.Name AS Responsible, Infrastructure.Price AS Price " +
-                "FROM Employee " +
-                "INNER JOIN (Office INNER JOIN (Inventory INNER JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) " +
-                "ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible];" },
-
-            {"Office","SELECT Office.Id, Department.Name AS Department, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department" }
-        };
-        public static void SetTable(string query, DataGrid dg)
+        public DataTable SelectQuery(string query)
         {
-            OleDbConnection con = new OleDbConnection(conString);
-
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
-            OleDbDataAdapter oda = new OleDbDataAdapter(command);
+            oda.SelectCommand = command;
 
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable(); 
             oda.Fill(dt);
+            foreach (DataColumn column in dt.Columns)
+                column.ColumnName.ToString();
             con.Close();
+            return dt;
             
-            dg.ItemsSource = dt.DefaultView;
         }
-        public void SetList(ListBox list)
+        public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
-            OleDbConnection con = new OleDbConnection(conString);
-
             con.Open();
+            
+            OleDbCommand updateCommand = new OleDbCommand(query, con);
+            oda.UpdateCommand = updateCommand;
+            foreach (OleDbParameter parameter in parameters)
+            {
+                oda.UpdateCommand.Parameters.Add(parameter);
+            }
+            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Infrastructure.Name = 3 WHERE Infrastructure.Id = 1", con);
+            //oda.UpdateCommand = updateCommand;
+            oda.UpdateCommand.ExecuteNonQuery();
+            con.Close();
+        }
+        public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
+        {
+            TreeView tree = new TreeView();
 
+            tables = GetTables();
+            TreeViewItem treeItem = new TreeViewItem() { Header = branch };
+
+            foreach (string str in tables)
+            {
+                TreeViewItem item = new TreeViewItem();
+                item.Header = str;
+                item.MouseDoubleClick += click;
+                treeItem.Items.Add(item);
+            }
+            tree.Items.Add(treeItem);
+
+            return tree;
+        }
+        public List<string> GetTables()
+        {
+            List<string> tables = new List<string>();
             string[] restrictions = new string[4];
             restrictions[3] = "Table";
 
+            con.Open();
             DataTable dt = con.GetSchema("Tables", restrictions);
             con.Close();
-
+            
             foreach (DataRow row in dt.Rows)
-            {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = row["TABLE_NAME"].ToString();
-                item.Selected += Item_Selected;
-                
-                list.Items.Add(item);
-            }
-
+                tables.Add(row["TABLE_NAME"].ToString());
+            return tables;
         }
-        private void Item_Selected(object sender, System.Windows.RoutedEventArgs e)
+        
+        public string[] GetColumnNames(string tableName)
         {
-            ListBoxItem item = (ListBoxItem)e.Source;
-            string content = item.Content.ToString();
-            if(queries.ContainsKey(content))
-                SetTable(queries[content], dg);
-            else
-                SetTable(queries["Default"]+content, dg);
+ 
+            DataTable schemaTable = new DataTable();
+            con.Open();
+            DataTable schema = con.GetSchema("Columns");
+            con.Close();
+            DataRow[] rows = schema.Select("TABLE_NAME ='" + tableName + "'");
+            string[] columnNames = new string[rows.Count()];
+            foreach (DataRow row in rows)
+                columnNames[int.Parse(row["ORDINAL_POSITION"].ToString()) - 1] = row["COLUMN_NAME"].ToString();
+            return columnNames;
         }
-
     }
 }
