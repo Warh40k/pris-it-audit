@@ -30,6 +30,17 @@ namespace client
         }
         void ChangeId(int id)
         {
+            if (id > table.Rows.Count - 1)
+            {
+                currentId--;
+                return;
+            }
+            else if (id < 0)
+            {
+                currentId = 0;
+                return;
+            }    
+            
             wrapPanel.Children.Clear();
             DataRowCollection rows = table.Rows;
 
