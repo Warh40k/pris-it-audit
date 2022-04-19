@@ -15,7 +15,6 @@ namespace client
     {
         public DbAccess db;
         public DataTable table;
-        List<string> columns;
         public int currentId = 0;
         MainWindow.GridUpdate UpdateGrid;
 
@@ -27,14 +26,13 @@ namespace client
             this.table = table;
             this.UpdateGrid = UpdateGrid;
             this.currentId = currentId;
-            ChangeId(currentId);
         }
-        void ChangeId(int id)
+        public void ChangeItem(int id)
         {
             DataRowCollection rows = table.Rows;
             string[] columns = db.GetColumnNames(table.TableName);
 
-            if (id > table.Rows.Count - 2)
+            if (id > table.Rows.Count)
             {
                 currentId--;
                 return;
@@ -66,7 +64,6 @@ namespace client
                         db.con.Open();
                         outerAdapter.Fill(foreignColumnValues);
                         db.con.Close();
-
                         ComboBox combo = GetForeignItems(foreignColumnValues, i, rows[id][i].ToString());
                         
                         wrapPanel.Children.Add(combo);
@@ -77,10 +74,43 @@ namespace client
                 }
             }
         }
+        public void AddItem()
+        {
+            DataRowCollection rows = table.Rows;
+            int id = rows.Count - 1;
+            string[] columns = db.GetColumnNames(table.TableName);
+
+            note_label.Content = string.Format("Запись {0}", id + 2);
+
+            wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
+            wrapPanel.Children.Add(new TextBox() { Text = (id+2).ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
+
+            for (int i = 1; i < columns.Length; i++)
+            {
+                wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
+
+                string[] columnSplit = table.Columns[i].Caption.Split('_');
+                bool notJoined = true;
+                if (columnSplit.Length > 1)
+                {
+                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                    DataTable foreignColumnValues = new DataTable();
+                    db.con.Open();
+                    outerAdapter.Fill(foreignColumnValues);
+                    db.con.Close();
+                    ComboBox combo = GetForeignItems(foreignColumnValues, i);
+
+                    wrapPanel.Children.Add(combo);
+                    notJoined = false;
+                }
+                else
+                    wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
+
+            }
+        }
         ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, string selectedItem="")
         {
             ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
-            int selectedIndex = 0;
             for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
             {
                 string foreignId = foreignColumnValues.Rows[j][0].ToString();
@@ -90,6 +120,7 @@ namespace client
                     combo.SelectedIndex = j;
                 combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
             }
+            
             return combo;
 
         }
@@ -144,12 +175,12 @@ namespace client
 
         private void forward_button_Click(object sender, RoutedEventArgs e)
         {
-            ChangeId(++currentId);
+            ChangeItem(++currentId);
         }
 
         private void backward_button_Click(object sender, RoutedEventArgs e)
         {
-            ChangeId(--currentId);
+            ChangeItem(--currentId);
         }
     }
 }
