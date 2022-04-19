@@ -31,7 +31,10 @@ namespace client
         }
         void ChangeId(int id)
         {
-            if (id > table.Rows.Count - 1)
+            DataRowCollection rows = table.Rows;
+            string[] columns = db.GetColumnNames(table.TableName);
+
+            if (id > table.Rows.Count - 2)
             {
                 currentId--;
                 return;
@@ -40,51 +43,56 @@ namespace client
             {
                 currentId = 0;
                 return;
-            }    
-            
-            wrapPanel.Children.Clear();
-            DataRowCollection rows = table.Rows;
-
-            string[] columns = db.GetColumnNames(table.TableName);
-            note_label.Content = string.Format("Запись {0}", id + 1);
-
-            wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
-            wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
-
-            for (int i = 1; i < columns.Length; i++)
+            }
+            else
             {
-                wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                string columnName = table.Columns[i].Caption;
-                string[] columnSplit = columnName.Split('_');
-                bool notJoined = true;
-                if (columnSplit.Length > 1)
+                wrapPanel.Children.Clear();
+                
+                note_label.Content = string.Format("Запись {0}", id + 1);
+
+                wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
+                wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
+
+                for (int i = 1; i < columns.Length; i++)
                 {
-                    int selectedIndex = 0;
-                    ComboBox combo = new ComboBox() { Text = columnName, Margin = new Thickness(5), MaxWidth = 120 };
-
-                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
-                    DataTable outerColumnValues = new DataTable();
-                    db.con.Open();
-                    outerAdapter.Fill(outerColumnValues);
-                    db.con.Close();
-                    for (int j = 0; j < outerColumnValues.Rows.Count;j++)
+                    wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
+                    
+                    string[] columnSplit = table.Columns[i].Caption.Split('_');
+                    bool notJoined = true;
+                    if (columnSplit.Length > 1)
                     {
-                        string foreignId = outerColumnValues.Rows[j][0].ToString();
-                        string foreignValue = outerColumnValues.Rows[j][1].ToString();
-                        if (foreignValue == rows[id][i].ToString())
-                            selectedIndex = j;
-                        combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId }) ;
-                    }
+                        OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                        DataTable foreignColumnValues = new DataTable();
+                        db.con.Open();
+                        outerAdapter.Fill(foreignColumnValues);
+                        db.con.Close();
 
-                    combo.SelectedIndex = selectedIndex;
-                    wrapPanel.Children.Add(combo);
-                    notJoined = false;
+                        ComboBox combo = GetForeignItems(foreignColumnValues, i, rows[id][i].ToString());
+                        
+                        wrapPanel.Children.Add(combo);
+                        notJoined = false;
+                    }
+                    else
+                        wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
                 }
-                else
-                    wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
         }
+        ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, string selectedItem="")
+        {
+            ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
+            int selectedIndex = 0;
+            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
+            {
+                string foreignId = foreignColumnValues.Rows[j][0].ToString();
+                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
 
+                if (foreignValue == selectedItem) //rows[columnId][i].ToString())
+                    combo.SelectedIndex = j;
+                combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
+            }
+            return combo;
+
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string value, field;

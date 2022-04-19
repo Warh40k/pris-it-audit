@@ -75,5 +75,12 @@ namespace client
         {
             UpdateGrid(currentTable.TableName);
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            GridUpdate updateGrid = UpdateGrid;
+            EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
+            em.Show();
+        }
     }
 }
