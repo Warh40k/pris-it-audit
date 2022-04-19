@@ -76,6 +76,7 @@ namespace client
 
             con.Open();
             DataTable dt = con.GetSchema("Tables", restrictions);
+            con.GetSchema("Indexes");
             con.Close();
             
             foreach (DataRow row in dt.Rows)

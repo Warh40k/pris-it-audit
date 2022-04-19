@@ -69,10 +69,11 @@ namespace client
                     db.con.Close();
                     for (int j = 0; j < outerColumnValues.Rows.Count;j++)
                     {
-                        string value = outerColumnValues.Rows[j][1].ToString();
-                        if (value == rows[id][i].ToString())
+                        string foreignId = outerColumnValues.Rows[j][0].ToString();
+                        string foreignValue = outerColumnValues.Rows[j][1].ToString();
+                        if (foreignValue == rows[id][i].ToString())
                             selectedIndex = j;
-                        combo.Items.Add(new ComboBoxItem() { Content = value }) ;
+                        combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId }) ;
                     }
 
                     combo.SelectedIndex = selectedIndex;
@@ -97,13 +98,16 @@ namespace client
                 if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
                 else
-                    value = (((ComboBox)item).SelectedIndex + 1).ToString();
+                {
+                    var cbitem = ((ComboBox)item).SelectedItem;
+                    value = ((ComboBoxItem)cbitem).Uid.ToString();
+                }
 
                 field = table.Columns[i].ColumnName;
 
                 if (type == "System.Windows.Controls.ComboBox")
                 {
-                    parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.BigInt });
+                    parameters.Add(new OleDbParameter(field, value));
                     query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
