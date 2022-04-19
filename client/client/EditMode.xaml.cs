@@ -105,7 +105,6 @@ namespace client
                 }
                 else
                     wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
-
             }
         }
         ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, string selectedItem="")
@@ -126,6 +125,17 @@ namespace client
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (currentId == table.Rows.Count - 1)
+                InsertItem();
+            else
+                UpdateItem();
+
+            Close();
+            UpdateGrid(table.TableName);
+        }
+
+        private void UpdateItem()
+        {
             string value, field;
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
@@ -138,7 +148,7 @@ namespace client
                     value = ((TextBox)item).Text;
                 else
                 {
-                    var cbitem = ((ComboBox)item).SelectedItem;
+                    object cbitem = ((ComboBox)item).SelectedItem;
                     value = ((ComboBoxItem)cbitem).Uid.ToString();
                 }
 
@@ -157,15 +167,48 @@ namespace client
                     isEmpty = false;
                 }
             }
-            if(isEmpty == false)
+            if (isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
                 query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, table.Rows[currentId][0]));
                 db.Update(table, query.ToString(), parameters);
             }
-            
-            Close();
-            UpdateGrid(table.TableName);
+
+        }
+        private void InsertItem()
+        {
+            string value, field;
+
+            bool isEmpty = true;
+            List<OleDbParameter> parameters = new List<OleDbParameter>();
+            for (int i = 1; i < table.Columns.Count; i++)
+            {
+                var item = wrapPanel.Children[2 * i + 1];
+                string type = item.GetType().ToString();
+                if (type == "System.Windows.Controls.TextBox")
+                    value = ((TextBox)item).Text;
+                else
+                {
+                    object cbitem = ((ComboBox)item).SelectedItem;
+                    value = ((ComboBoxItem)cbitem).Uid.ToString();
+                }
+
+                field = table.Columns[i].ColumnName;
+
+                if (type == "System.Windows.Controls.ComboBox")
+                {
+                    parameters.Add(new OleDbParameter(field, value));
+                    isEmpty = false;
+                }
+                else if (value != table.Rows[currentId][field].ToString() && value != "")
+                {
+                    parameters.Add(new OleDbParameter(field, value));
+                    isEmpty = false;
+                }
+            }
+            if (isEmpty == false)
+                db.Insert(table, parameters);
+
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

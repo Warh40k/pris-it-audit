@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Windows.Controls;
+using System.Text;
 
 namespace client
 {
@@ -48,6 +49,30 @@ namespace client
             //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Infrastructure.Name = 3 WHERE Infrastructure.Id = 1", con);
             //oda.UpdateCommand = updateCommand;
             oda.UpdateCommand.ExecuteNonQuery();
+            con.Close();
+        }
+        public void Insert(DataTable table, List<OleDbParameter> parameters)
+        {
+            StringBuilder fields = new StringBuilder(string.Format("INSERT INTO [{0}] ( ", table.TableName));
+            StringBuilder values = new StringBuilder("VALUES ( ");
+            foreach(OleDbParameter parameter in parameters)
+            {
+                fields.Append(parameter.ParameterName + ",");
+                values.Append(parameter.Value + ",");
+            }
+            fields.Remove(fields.Length - 1, 1);
+            fields.Append(") ");
+            values.Remove(values.Length - 1, 1);
+            values.Append(");");
+            string query = fields.Append(values).ToString();
+            OleDbCommand insertCommand = new OleDbCommand(query, con);
+            oda.InsertCommand = insertCommand;
+
+            foreach (OleDbParameter parameter in parameters)
+                oda.InsertCommand.Parameters.Add(parameter);
+
+            con.Open();
+            oda.InsertCommand.ExecuteNonQuery();
             con.Close();
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
