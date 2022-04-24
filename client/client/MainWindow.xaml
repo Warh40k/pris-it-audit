@@ -21,7 +21,7 @@
         <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
             <Button Content="Изменить" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click" Width="60" Height="20"/>
             <Button Content="Добавить&#xD;&#xA;Добавить" HorizontalAlignment="Center" Margin="0,0,70,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_1"/>
-            <Button Content="Удалить" HorizontalAlignment="Center" Margin="210,0,0,10" VerticalAlignment="Bottom" Width="60" Height="20"/>
+            <Button Content="Удалить" HorizontalAlignment="Center" Margin="210,0,0,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_2"/>
         </Grid>
     </Grid>
 </Window>

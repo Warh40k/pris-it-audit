@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Data;
+using System.Data.OleDb;
 
 namespace client
 {
@@ -83,6 +84,20 @@ namespace client
             EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
             em.AddItem();
             em.Show();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            string query;
+            if (dataGrid.SelectedIndex != -1)
+            {
+                query = string.Format("DELETE FROM [{0}] WHERE {1} = ?", currentTable.TableName, currentTable.Columns[0].ColumnName);
+                List<OleDbParameter> parameters = new List<OleDbParameter>();
+                parameters.Add(new OleDbParameter(currentTable.Columns[0].ColumnName, currentTable.Rows[dataGrid.SelectedIndex][0]));
+                db.Update(currentTable, query, parameters);
+                UpdateGrid(currentTable.TableName);
+            }
+
         }
     }
 }
