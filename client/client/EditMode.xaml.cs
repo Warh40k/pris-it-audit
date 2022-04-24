@@ -103,7 +103,7 @@ namespace client
                     wrapPanel.Children.Add(combo);
                     notJoined = false;
                 }
-                else if (table.Columns[i].ColumnName.Contains("Date"))
+                else if (columns[i,1] == "7")
                 {
                     DatePicker datePicker = new DatePicker();
                     wrapPanel.Children.Add(datePicker);
@@ -182,7 +182,9 @@ namespace client
         }
         private void InsertItem()
         {
-            string value, field;
+            string field;
+            object value;
+            string[,] columns = db.GetColumnNames(table.TableName);
 
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
@@ -192,6 +194,11 @@ namespace client
                 string type = item.GetType().ToString();
                 if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
+                else if (type == "System.Windows.Controls.DatePicker")
+                {
+                    object dpitem = ((DatePicker)item).SelectedDate;
+                    value = ((DateTime)dpitem).ToShortDateString();
+                }
                 else
                 {
                     object cbitem = ((ComboBox)item).SelectedItem;
@@ -200,12 +207,16 @@ namespace client
 
                 field = table.Columns[i].ColumnName;
 
-                if (type == "System.Windows.Controls.ComboBox")
+                if (type == "System.Windows.Controls.ComboBox" || type == "System.Windows.Controls.DatePicker")
                 {
-                    parameters.Add(new OleDbParameter(field, value));
+                    OleDbParameter parameter = new OleDbParameter();
+                    parameter.ParameterName = field;
+                    parameter.OleDbType = (OleDbType)(int.Parse(columns[i,1]));
+                    parameter.Value = value;
+                    parameters.Add(parameter);
                     isEmpty = false;
                 }
-                else if (value != table.Rows[currentId][field].ToString() && value != "")
+                else if ((string)value != table.Rows[currentId][field].ToString() && (string)value != "")
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     isEmpty = false;
