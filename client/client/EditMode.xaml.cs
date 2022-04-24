@@ -175,7 +175,7 @@ namespace client
             if (isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
-                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, table.Rows[currentId][0]));
+                query.Append(string.Format(" WHERE {0}.{1} = {2}", table.TableName, table.Columns[0].ColumnName, table.Rows[currentId][0]));
                 db.Update(table, query.ToString(), parameters);
             }
 
