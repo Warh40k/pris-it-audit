@@ -58,7 +58,7 @@ namespace client
             foreach(OleDbParameter parameter in parameters)
             {
                 fields.Append(parameter.ParameterName + ",");
-                values.Append(parameter.Value + ",");
+                values.Append("?,");
             }
             fields.Remove(fields.Length - 1, 1);
             fields.Append(") ");

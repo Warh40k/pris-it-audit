@@ -197,7 +197,7 @@ namespace client
                 else if (type == "System.Windows.Controls.DatePicker")
                 {
                     object dpitem = ((DatePicker)item).SelectedDate;
-                    value = ((DateTime)dpitem).ToShortDateString();
+                    value = ((DateTime)dpitem);
                 }
                 else
                 {
