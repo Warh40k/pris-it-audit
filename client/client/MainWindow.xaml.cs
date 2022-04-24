@@ -60,11 +60,11 @@ namespace client
             else
                 currentTable = db.SelectQuery(queries["Default"] + tableName);
 
-            string[] columns = db.GetColumnNames(tableName);
+            string[,] columns = db.GetColumnNames(tableName);
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
-                currentTable.Columns[i].ColumnName = columns[i];
+                currentTable.Columns[i].ColumnName = columns[i, 0];
             }
 
             dataGrid.ItemsSource = currentTable.DefaultView;

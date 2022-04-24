@@ -30,7 +30,7 @@ namespace client
         public void ChangeItem(int id)
         {
             DataRowCollection rows = table.Rows;
-            string[] columns = db.GetColumnNames(table.TableName);
+            string[,] columns = db.GetColumnNames(table.TableName);
 
             if (id > table.Rows.Count)
             {
@@ -48,12 +48,12 @@ namespace client
                 
                 note_label.Content = string.Format("Запись {0}", id + 1);
 
-                wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
+                wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
                 wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
-                for (int i = 1; i < columns.Length; i++)
+                for (int i = 1; i < columns.GetLength(0); i++)
                 {
-                    wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
+                    wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
                     
                     string[] columnSplit = table.Columns[i].Caption.Split('_');
                     bool notJoined = true;
@@ -78,16 +78,16 @@ namespace client
         {
             DataRowCollection rows = table.Rows;
             int id = rows.Count - 1;
-            string[] columns = db.GetColumnNames(table.TableName);
+            string[,] columns = db.GetColumnNames(table.TableName);
 
             note_label.Content = string.Format("Запись {0}", id + 2);
 
-            wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
+            wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
             wrapPanel.Children.Add(new TextBox() { Text = (id+2).ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
-            for (int i = 1; i < columns.Length; i++)
+            for (int i = 1; i < columns.GetLength(0); i++)
             {
-                wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
+                wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
 
                 string[] columnSplit = table.Columns[i].Caption.Split('_');
                 bool notJoined = true;
@@ -103,6 +103,11 @@ namespace client
                     wrapPanel.Children.Add(combo);
                     notJoined = false;
                 }
+                else if (table.Columns[i].ColumnName.Contains("Date"))
+                {
+                    DatePicker datePicker = new DatePicker();
+                    wrapPanel.Children.Add(datePicker);
+                }
                 else
                     wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
@@ -115,7 +120,7 @@ namespace client
                 string foreignId = foreignColumnValues.Rows[j][0].ToString();
                 string foreignValue = foreignColumnValues.Rows[j][1].ToString();
 
-                if (foreignValue == selectedItem) //rows[columnId][i].ToString())
+                if (foreignValue == selectedItem)
                     combo.SelectedIndex = j;
                 combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
             }
