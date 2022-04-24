@@ -46,7 +46,7 @@ namespace client
             {
                 oda.UpdateCommand.Parameters.Add(parameter);
             }
-            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Infrastructure.Name = 3 WHERE Infrastructure.Id = 1", con);
+            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Инфраструктура] SET Инфраструктура.Name = 3 WHERE Инфраструктура.Id = 1", con);
             //oda.UpdateCommand = updateCommand;
             oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
@@ -119,8 +119,8 @@ namespace client
             string[,] columnNames = new string[rows.Count(),2];
             foreach (DataRow row in rows)
             {
-                columnNames[int.Parse(row["ORDINAL_POSITION"].ToString()) - 1, 0] = row["COLUMN_NAME"].ToString();
-                columnNames[int.Parse(row["ORDINAL_POSITION"].ToString()) - 1, 1] = row["DATA_TYPE"].ToString();
+                columnNames[int.Parse(row["ORDINAL_Position"].ToString()) - 1, 0] = row["COLUMN_NAME"].ToString();
+                columnNames[int.Parse(row["ORDINAL_Position"].ToString()) - 1, 1] = row["DATA_TYPE"].ToString();
             }
             return columnNames;
         }

@@ -17,16 +17,14 @@ namespace client
 
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
-            {"Employee", "SELECT Employee.Id, Employee.Name AS Name, Employee.Surname, [Position].Name, Department.Name " +
-                "FROM Department RIGHT JOIN ([Position] RIGHT JOIN Employee ON [Position].[Id] = Employee.[Position]) ON Department.[Id] = Employee.[Department];"},
+            {"Сотрудник", "SELECT Сотрудник.Код, Сотрудник.Имя AS Имя, Сотрудник.Фамилия, Должность.Наименование, Подразделение.Наименование " +
+                "FROM Подразделение RIGHT JOIN (Должность RIGHT JOIN Сотрудник ON [Должность].[Код] = Сотрудник.[Должность]) ON Подразделение.[Код] = Сотрудник.[Подразделение];"},
 
             {"Default", "SELECT * FROM "},
 
-            {"Position", "SELECT * FROM [Position] ORDER BY Id"},
+            {"Инфраструктура", "SELECT Инфраструктура.ИнвНомер, Оборудование.Название As Название, Инфраструктура.ДатаИзготов, Инфраструктура.ДатаПриобр, Инфраструктура.Цена, Инфраструктура.Количество, [Кабинет].Наименование AS Кабинет, Сотрудник.Имя, Инфраструктура.Удалить FROM Сотрудник INNER JOIN (Оборудование INNER JOIN (Кабинет INNER JOIN Инфраструктура ON Кабинет.[Номер] = Инфраструктура.[Кабинет]) ON Оборудование.[Код] = Инфраструктура.[Наименование]) ON Сотрудник.[Код] = Инфраструктура.[Ответственный];" },
 
-            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.Released, Infrastructure.Purchased,  Infrastructure.Price, Infrastructure.Units, Office.Name, Employee.Name FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
-
-            {"Office","SELECT Office.Id, Department.Name, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
+            {"Кабинет","SELECT Кабинет.Номер, Подразделение.Наименование, Кабинет.Наименование AS Наименование, Кабинет.Удалить FROM Кабинет LEFT JOIN Подразделение ON Подразделение.Код = Кабинет.Подразделение ORDER BY Кабинет.Номер;" }
         };
         public MainWindow()
         {
@@ -62,6 +60,7 @@ namespace client
                 currentTable = db.SelectQuery(queries["Default"] + tableName);
 
             string[,] columns = db.GetColumnNames(tableName);
+
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
