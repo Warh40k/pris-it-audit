@@ -69,6 +69,12 @@ namespace client
                         wrapPanel.Children.Add(combo);
                         notJoined = false;
                     }
+                    else if (columns[i, 1] == "7")
+                    {
+                        DatePicker datePicker = new DatePicker();
+                        datePicker.SelectedDate = (DateTime)table.Rows[id][i];
+                        wrapPanel.Children.Add(datePicker);
+                    }
                     else
                         wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
                 }
@@ -141,7 +147,8 @@ namespace client
 
         private void UpdateItem()
         {
-            string value, field;
+            object value;
+            string field;
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
@@ -151,6 +158,11 @@ namespace client
                 string type = item.GetType().ToString();
                 if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
+                else if (type == "System.Windows.Controls.DatePicker")
+                {
+                    object dpitem = ((DatePicker)item).SelectedDate;
+                    value = (DateTime)dpitem;
+                }
                 else
                 {
                     object cbitem = ((ComboBox)item).SelectedItem;
@@ -159,13 +171,13 @@ namespace client
 
                 field = table.Columns[i].ColumnName;
 
-                if (type == "System.Windows.Controls.ComboBox")
+                if (type == "System.Windows.Controls.ComboBox" || type == "System.Windows.Controls.DatePicker")
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
-                else if (value != table.Rows[currentId][field].ToString())
+                else if ((string)value != table.Rows[currentId][field].ToString() && (string)value != "")
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     query.Append(table.TableName + "." + field + "= ?,");
@@ -197,7 +209,7 @@ namespace client
                 else if (type == "System.Windows.Controls.DatePicker")
                 {
                     object dpitem = ((DatePicker)item).SelectedDate;
-                    value = ((DateTime)dpitem);
+                    value = (DateTime)dpitem;
                 }
                 else
                 {
