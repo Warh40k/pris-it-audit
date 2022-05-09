@@ -46,8 +46,6 @@ namespace client
             {
                 oda.UpdateCommand.Parameters.Add(parameter);
             }
-            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Инфраструктура] SET Инфраструктура.Name = 3 WHERE Инфраструктура.Id = 1", con);
-            //oda.UpdateCommand = updateCommand;
             oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
         }
