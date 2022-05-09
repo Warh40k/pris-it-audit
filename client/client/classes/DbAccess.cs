@@ -46,7 +46,7 @@ namespace client
             {
                 oda.UpdateCommand.Parameters.Add(parameter);
             }
-            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Infrastructure] SET Infrastructure.Name = 3 WHERE Infrastructure.Id = 1", con);
+            //OleDbCommand updateCommand = new OleDbCommand("UPDATE [Инфраструктура] SET Инфраструктура.Name = 3 WHERE Инфраструктура.Id = 1", con);
             //oda.UpdateCommand = updateCommand;
             oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
@@ -58,7 +58,7 @@ namespace client
             foreach(OleDbParameter parameter in parameters)
             {
                 fields.Append(parameter.ParameterName + ",");
-                values.Append(parameter.Value + ",");
+                values.Append("?,");
             }
             fields.Remove(fields.Length - 1, 1);
             fields.Append(") ");
@@ -101,7 +101,6 @@ namespace client
 
             con.Open();
             DataTable dt = con.GetSchema("Tables", restrictions);
-            con.GetSchema("Indexes");
             con.Close();
             
             foreach (DataRow row in dt.Rows)
@@ -109,7 +108,7 @@ namespace client
             return tables;
         }
         
-        public string[] GetColumnNames(string tableName)
+        public string[,] GetColumnNames(string tableName)
         {
  
             DataTable schemaTable = new DataTable();
@@ -117,9 +116,12 @@ namespace client
             DataTable schema = con.GetSchema("Columns");
             con.Close();
             DataRow[] rows = schema.Select("TABLE_NAME ='" + tableName + "'");
-            string[] columnNames = new string[rows.Count()];
+            string[,] columnNames = new string[rows.Count(),2];
             foreach (DataRow row in rows)
-                columnNames[int.Parse(row["ORDINAL_POSITION"].ToString()) - 1] = row["COLUMN_NAME"].ToString();
+            {
+                columnNames[int.Parse(row["ORDINAL_Position"].ToString()) - 1, 0] = row["COLUMN_NAME"].ToString();
+                columnNames[int.Parse(row["ORDINAL_Position"].ToString()) - 1, 1] = row["DATA_TYPE"].ToString();
+            }
             return columnNames;
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Data;
+using System.Data.OleDb;
 
 namespace client
 {
@@ -16,16 +17,14 @@ namespace client
 
         Dictionary<string, string> queries = new Dictionary<string, string>()
         {
-            {"Employee", "SELECT Employee.Id, Employee.Name AS Name, Employee.Surname, [Position].Name, Department.Name " +
-                "FROM Department RIGHT JOIN ([Position] RIGHT JOIN Employee ON [Position].[Id] = Employee.[Position]) ON Department.[Id] = Employee.[Department];"},
+            {"Сотрудник", "SELECT Сотрудник.Код, Сотрудник.Название, Должность.Название, Подразделение.Название, Сотрудник.Удалить " +
+                "FROM Подразделение RIGHT JOIN (Должность RIGHT JOIN Сотрудник ON [Должность].[Код] = Сотрудник.[Должность]) ON Подразделение.[Код] = Сотрудник.[Подразделение];"},
 
             {"Default", "SELECT * FROM "},
 
-            {"Position", "SELECT * FROM [Position] ORDER BY Id"},
+            {"Инфраструктура", "SELECT Инфраструктура.Код, Оборудование.Название, Инфраструктура.ДатаИзготов, Инфраструктура.ДатаПриобр, Инфраструктура.Цена, Инфраструктура.Количество, [Кабинет].Название, Сотрудник.Название, Инфраструктура.Удалить FROM Сотрудник INNER JOIN (Оборудование INNER JOIN (Кабинет INNER JOIN Инфраструктура ON Кабинет.[Код] = Инфраструктура.[Кабинет]) ON Оборудование.[Код] = Инфраструктура.[Оборудование]) ON Сотрудник.[Код] = Инфраструктура.[Сотрудник];" },
 
-            {"Infrastructure", "SELECT Infrastructure.Id, Inventory.Name, Infrastructure.Released, Infrastructure.Purchased,  Infrastructure.Price, Infrastructure.Units, Office.Name, Employee.Name FROM Employee RIGHT JOIN (Office RIGHT JOIN (Inventory RIGHT JOIN Infrastructure ON Inventory.[Id] = Infrastructure.[Name]) ON Office.[Id] = Infrastructure.[Office]) ON Employee.Id = Infrastructure.[Responsible] ORDER BY Infrastructure.Id;"},
-
-            {"Office","SELECT Office.Id, Department.Name, Office.Name AS Name FROM Office LEFT JOIN Department ON Department.Id = Office.Department ORDER BY Office.Id;" }
+            {"Кабинет","SELECT Кабинет.Код, Подразделение.Название, Кабинет.Название AS Название, Кабинет.Удалить FROM Кабинет LEFT JOIN Подразделение ON Подразделение.Код = Кабинет.Подразделение ORDER BY Кабинет.Код;" }
         };
         public MainWindow()
         {
@@ -60,11 +59,12 @@ namespace client
             else
                 currentTable = db.SelectQuery(queries["Default"] + tableName);
 
-            string[] columns = db.GetColumnNames(tableName);
+            string[,] columns = db.GetColumnNames(tableName);
+
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
-                currentTable.Columns[i].ColumnName = columns[i];
+                currentTable.Columns[i].ColumnName = columns[i, 0];
             }
 
             dataGrid.ItemsSource = currentTable.DefaultView;
@@ -83,6 +83,20 @@ namespace client
             EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
             em.AddItem();
             em.Show();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            string query;
+            if (dataGrid.SelectedIndex != -1)
+            {
+                query = string.Format("DELETE FROM [{0}] WHERE {1} = ?", currentTable.TableName, currentTable.Columns[0].ColumnName);
+                List<OleDbParameter> parameters = new List<OleDbParameter>();
+                parameters.Add(new OleDbParameter(currentTable.Columns[0].ColumnName, currentTable.Rows[dataGrid.SelectedIndex][0]));
+                db.Update(currentTable, query, parameters);
+                UpdateGrid(currentTable.TableName);
+            }
+
         }
     }
 }
