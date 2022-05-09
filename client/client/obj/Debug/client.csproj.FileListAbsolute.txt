@@ -14,8 +14,6 @@ C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.CoreCompileInputs.cache
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.exe
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.pdb
-C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\DataBase.mdb
-C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client_Content.g.cs
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\EditMode.g.cs
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\EditMode.baml
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\test.g.cs

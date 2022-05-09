@@ -15,7 +15,6 @@ namespace client
     {
         public DbAccess db;
         public DataTable table;
-        List<string> columns;
         public int currentId = 0;
         MainWindow.GridUpdate UpdateGrid;
 
@@ -27,11 +26,13 @@ namespace client
             this.table = table;
             this.UpdateGrid = UpdateGrid;
             this.currentId = currentId;
-            ChangeId(currentId);
         }
-        void ChangeId(int id)
+        public void ChangeItem(int id)
         {
-            if (id > table.Rows.Count - 1)
+            DataRowCollection rows = table.Rows;
+            string[,] columns = db.GetColumnNames(table.TableName);
+
+            if (id > table.Rows.Count)
             {
                 currentId--;
                 return;
@@ -40,53 +41,114 @@ namespace client
             {
                 currentId = 0;
                 return;
-            }    
-            
-            wrapPanel.Children.Clear();
-            DataRowCollection rows = table.Rows;
-
-            string[] columns = db.GetColumnNames(table.TableName);
-            note_label.Content = string.Format("Запись {0}", id + 1);
-
-            wrapPanel.Children.Add(new Label() { Content = columns[0], Margin = new Thickness(5), MaxWidth = 120 });
-            wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
-
-            for (int i = 1; i < columns.Length; i++)
+            }
+            else
             {
-                wrapPanel.Children.Add(new Label() { Content = columns[i], Margin = new Thickness(5), MaxWidth = 120 });
-                string columnName = table.Columns[i].Caption;
-                string[] columnSplit = columnName.Split('_');
+                wrapPanel.Children.Clear();
+                
+                note_label.Content = string.Format("Запись {0}", id + 1);
+
+                wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
+                wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
+
+                for (int i = 1; i < columns.GetLength(0); i++)
+                {
+                    wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
+                    
+                    string[] columnSplit = table.Columns[i].Caption.Split('_');
+                    bool notJoined = true;
+                    if (columnSplit.Length > 1)
+                    {
+                        OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                        DataTable foreignColumnValues = new DataTable();
+                        db.con.Open();
+                        outerAdapter.Fill(foreignColumnValues);
+                        db.con.Close();
+                        ComboBox combo = GetForeignItems(foreignColumnValues, i, rows[id][i].ToString());
+                        
+                        wrapPanel.Children.Add(combo);
+                        notJoined = false;
+                    }
+                    else if (columns[i, 1] == "7")
+                    {
+                        DatePicker datePicker = new DatePicker();
+                        datePicker.SelectedDate = (DateTime)table.Rows[id][i];
+                        wrapPanel.Children.Add(datePicker);
+                    }
+                    else
+                        wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
+                }
+            }
+        }
+        public void AddItem()
+        {
+            DataRowCollection rows = table.Rows;
+            int id = rows.Count - 1;
+            string[,] columns = db.GetColumnNames(table.TableName);
+
+            note_label.Content = string.Format("Запись {0}", id + 2);
+
+            wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
+            wrapPanel.Children.Add(new TextBox() { Text = (id+2).ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
+
+            for (int i = 1; i < columns.GetLength(0); i++)
+            {
+                wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
+
+                string[] columnSplit = table.Columns[i].Caption.Split('_');
                 bool notJoined = true;
                 if (columnSplit.Length > 1)
                 {
-                    int selectedIndex = 0;
-                    ComboBox combo = new ComboBox() { Text = columnName, Margin = new Thickness(5), MaxWidth = 120 };
-
-                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
-                    DataTable outerColumnValues = new DataTable();
+                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                    DataTable foreignColumnValues = new DataTable();
                     db.con.Open();
-                    outerAdapter.Fill(outerColumnValues);
+                    outerAdapter.Fill(foreignColumnValues);
                     db.con.Close();
-                    for (int j = 0; j < outerColumnValues.Rows.Count;j++)
-                    {
-                        string value = outerColumnValues.Rows[j][1].ToString();
-                        if (value == rows[id][i].ToString())
-                            selectedIndex = j;
-                        combo.Items.Add(new ComboBoxItem() { Content = value }) ;
-                    }
+                    ComboBox combo = GetForeignItems(foreignColumnValues, i);
 
-                    combo.SelectedIndex = selectedIndex;
                     wrapPanel.Children.Add(combo);
                     notJoined = false;
                 }
+                else if (columns[i,1] == "7")
+                {
+                    DatePicker datePicker = new DatePicker();
+                    wrapPanel.Children.Add(datePicker);
+                }
                 else
-                    wrapPanel.Children.Add(new TextBox() { Text = rows[id][i].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
+                    wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
         }
+        ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, string selectedItem="")
+        {
+            ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
+            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
+            {
+                string foreignId = foreignColumnValues.Rows[j][0].ToString();
+                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
 
+                if (foreignValue == selectedItem)
+                    combo.SelectedIndex = j;
+                combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
+            }
+            
+            return combo;
+
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string value, field;
+            if (currentId == table.Rows.Count - 1)
+                InsertItem();
+            else
+                UpdateItem();
+
+            Close();
+            UpdateGrid(table.TableName);
+        }
+
+        private void UpdateItem()
+        {
+            object value;
+            string field;
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
@@ -96,33 +158,85 @@ namespace client
                 string type = item.GetType().ToString();
                 if (type == "System.Windows.Controls.TextBox")
                     value = ((TextBox)item).Text;
+                else if (type == "System.Windows.Controls.DatePicker")
+                {
+                    object dpitem = ((DatePicker)item).SelectedDate;
+                    value = (DateTime)dpitem;
+                }
                 else
-                    value = (((ComboBox)item).SelectedIndex + 1).ToString();
+                {
+                    object cbitem = ((ComboBox)item).SelectedItem;
+                    value = ((ComboBoxItem)cbitem).Uid.ToString();
+                }
 
                 field = table.Columns[i].ColumnName;
 
-                if (type == "System.Windows.Controls.ComboBox")
+                if (type == "System.Windows.Controls.ComboBox" || type == "System.Windows.Controls.DatePicker")
                 {
-                    parameters.Add(new OleDbParameter(field, value) { OleDbType = OleDbType.BigInt });
+                    parameters.Add(new OleDbParameter(field, value));
                     query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
-                else if (value != table.Rows[currentId][field].ToString())
+                else if ((string)value != table.Rows[currentId][field].ToString() && (string)value != "")
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     query.Append(table.TableName + "." + field + "= ?,");
                     isEmpty = false;
                 }
             }
-            if(isEmpty == false)
+            if (isEmpty == false)
             {
                 query.Remove(query.Length - 1, 1);
-                query.Append(string.Format(" WHERE {0}.Id = {1}", table.TableName, table.Rows[currentId][0]));
+                query.Append(string.Format(" WHERE {0}.{1} = {2}", table.TableName, table.Columns[0].ColumnName, table.Rows[currentId][0]));
                 db.Update(table, query.ToString(), parameters);
             }
-            
-            Close();
-            UpdateGrid(table.TableName);
+
+        }
+        private void InsertItem()
+        {
+            string field;
+            object value;
+            string[,] columns = db.GetColumnNames(table.TableName);
+
+            bool isEmpty = true;
+            List<OleDbParameter> parameters = new List<OleDbParameter>();
+            for (int i = 1; i < table.Columns.Count; i++)
+            {
+                var item = wrapPanel.Children[2 * i + 1];
+                string type = item.GetType().ToString();
+                if (type == "System.Windows.Controls.TextBox")
+                    value = ((TextBox)item).Text;
+                else if (type == "System.Windows.Controls.DatePicker")
+                {
+                    object dpitem = ((DatePicker)item).SelectedDate;
+                    value = (DateTime)dpitem;
+                }
+                else
+                {
+                    object cbitem = ((ComboBox)item).SelectedItem;
+                    value = ((ComboBoxItem)cbitem).Uid.ToString();
+                }
+
+                field = table.Columns[i].ColumnName;
+
+                if (type == "System.Windows.Controls.ComboBox" || type == "System.Windows.Controls.DatePicker")
+                {
+                    OleDbParameter parameter = new OleDbParameter();
+                    parameter.ParameterName = field;
+                    parameter.OleDbType = (OleDbType)(int.Parse(columns[i,1]));
+                    parameter.Value = value;
+                    parameters.Add(parameter);
+                    isEmpty = false;
+                }
+                else if ((string)value != table.Rows[currentId][field].ToString() && (string)value != "")
+                {
+                    parameters.Add(new OleDbParameter(field, value));
+                    isEmpty = false;
+                }
+            }
+            if (isEmpty == false)
+                db.Insert(table, parameters);
+
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -132,12 +246,12 @@ namespace client
 
         private void forward_button_Click(object sender, RoutedEventArgs e)
         {
-            ChangeId(++currentId);
+            ChangeItem(++currentId);
         }
 
         private void backward_button_Click(object sender, RoutedEventArgs e)
         {
-            ChangeId(--currentId);
+            ChangeItem(--currentId);
         }
     }
 }
