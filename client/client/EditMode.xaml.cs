@@ -59,7 +59,7 @@ namespace client
                     bool notJoined = true;
                     if (columnSplit.Length > 1)
                     {
-                        OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                        OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
                         DataTable foreignColumnValues = new DataTable();
                         db.con.Open();
                         outerAdapter.Fill(foreignColumnValues);
@@ -93,7 +93,7 @@ namespace client
                 bool notJoined = true;
                 if (columnSplit.Length > 1)
                 {
-                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Id,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
+                    OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код,[{0}] FROM [{1}]", columnSplit[1], columnSplit[0]), db.con);
                     DataTable foreignColumnValues = new DataTable();
                     db.con.Open();
                     outerAdapter.Fill(foreignColumnValues);
