@@ -54,7 +54,7 @@ namespace client
                 selected = 0;
             EditMode em = new EditMode(db, currentTable, updateGrid, selected);
             em.ChangeItem(selected);
-            em.Show();
+            em.ShowDialog();
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -92,7 +92,7 @@ namespace client
             GridUpdate updateGrid = UpdateGrid;
             EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
             em.AddItem();
-            em.Show();
+            em.ShowDialog();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

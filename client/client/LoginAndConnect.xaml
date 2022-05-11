@@ -20,8 +20,8 @@
         <StackPanel x:Name="login_stack" Orientation="Vertical" Height="229" IsEnabled="False">
             <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." HorizontalContentAlignment="Center" Margin="0,14,0,0"/>
             <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0" SelectedIndex="0"/>
-            <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0"/>
-            <PasswordBox x:Name="passwordbox" Width="220" ToolTip="Пароль" AutomationProperties.HelpText="Пароль" Margin="0,14,0,0"/>
+            <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0" Text="galBatur"/>
+            <PasswordBox x:Name="passwordbox" Width="220" ToolTip="Пароль" AutomationProperties.HelpText="Пароль" Margin="0,14,0,0" Password="Менеджер"/>
             <Button x:Name="sign_in" Content="Вход" Width="116" AutomationProperties.HelpText="Подтвердить" Click="Button_Click" Margin="0,14,0,0"/>
         </StackPanel>
     </StackPanel>

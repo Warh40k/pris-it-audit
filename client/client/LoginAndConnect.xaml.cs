@@ -22,6 +22,12 @@ namespace client
     /// </summary>
     public partial class LoginAndConnect : Window
     {
+        Dictionary<string, string> credentials = new Dictionary<string, string>()
+        {
+            {"vladanis","Сотрудник" },
+            {"galBatur", "Менеджер" },
+            {"antichip", "Системный администратор" }
+        };
         string dbPath = "X:\\DataBase.accdb";
         DbAccess db;
         public LoginAndConnect()
@@ -41,6 +47,8 @@ namespace client
                 con_label.Content = "Соединение установлено";
                 con_label.Foreground = Brushes.Green;
                 login_stack.IsEnabled = true;
+
+                //Заполнение combobox названиями должностей из таблицы Должность
                 OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код, Название FROM Должность"), db.con);
                 DataTable foreignColumnValues = new DataTable();
                 outerAdapter.Fill(foreignColumnValues);
@@ -65,8 +73,16 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
+            //Если логин существует и указанная должность совпадает с полномочиями указанного логина
+            string selectedPosition = (string)position_combo.SelectedValue;
+            if (credentials.Keys.Contains(login_textbox.Text) && selectedPosition == credentials[login_textbox.Text] && passwordbox.Password == credentials[login_textbox.Text])
+            //А пароль равен наименованию должности сотрудника
+            {
+                DialogResult = true;
+                Close();
+            }
+            else
+                MessageBox.Show("Неверный логин или пароль","Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
