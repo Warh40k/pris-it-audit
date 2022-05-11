@@ -7,10 +7,11 @@
         mc:Ignorable="d"
         Title="LoginAndConnect" Height="450" Width="420">
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
-        <Label Content="Добро пожаловать. Пожалуйста, авторизуйтесь." Margin="0,16,0,0" HorizontalContentAlignment="Center"/>
-        <ComboBox Width="218" Margin="0,16,0,0" ToolTip="Должность" AutomationProperties.HelpText="Должность"/>
-        <TextBox TextWrapping="Wrap" Width="220" Margin="0,16,0,0" ToolTip="Логин" AutomationProperties.HelpText="Логин"/>
-        <PasswordBox Width="220" Margin="0,16,0,0" ToolTip="Пароль" AutomationProperties.HelpText="Пароль"/>
-        <Button Content="Вход" Margin="0,16,0,0" Width="115" AutomationProperties.HelpText="Подтвердить" Click="Button_Click"/>
+        <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+        <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." Margin="0,16,0,0" HorizontalContentAlignment="Center"/>
+        <ComboBox x:Name="position_combo" Width="218" Margin="0,16,0,0" ToolTip="Должность" AutomationProperties.HelpText="Должность"/>
+        <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" Margin="0,16,0,0" ToolTip="Логин" AutomationProperties.HelpText="Логин"/>
+        <PasswordBox x:Name="passwordbox" Width="220" Margin="0,16,0,0" ToolTip="Пароль" AutomationProperties.HelpText="Пароль"/>
+        <Button x:Name="sign_in" Content="Вход" Margin="0,16,0,0" Width="115" AutomationProperties.HelpText="Подтвердить" Click="Button_Click"/>
     </StackPanel>
 </Window>

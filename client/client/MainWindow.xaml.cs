@@ -32,6 +32,7 @@ namespace client
             InitializeComponent();
             var loginWindow = new LoginAndConnect();
             loginWindow.Show();
+            IsEnabled = false;
             db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=X:\\DataBase.accdb;");
             System.Windows.Input.MouseButtonEventHandler clickEvent;
             clickEvent = Item_MouseDoubleClick;
