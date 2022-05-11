@@ -30,7 +30,7 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
-            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=DataBase.accdb;");
+            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=X:\\DataBase.accdb;");
             System.Windows.Input.MouseButtonEventHandler clickEvent;
             clickEvent = Item_MouseDoubleClick;
             TreeView treeView = db.SetTree("Tables", clickEvent);

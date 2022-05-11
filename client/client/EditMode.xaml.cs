@@ -51,7 +51,7 @@ namespace client
                 wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
                 wrapPanel.Children.Add(new TextBox() { Text = rows[id][0].ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
-                for (int i = 1; i < columns.GetLength(0); i++)
+                for (int i = 1; i < columns.GetLength(0) - 1; i++)
                 {
                     wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
                     
@@ -91,7 +91,7 @@ namespace client
             wrapPanel.Children.Add(new Label() { Content = columns[0,0], Margin = new Thickness(5), MaxWidth = 120 });
             wrapPanel.Children.Add(new TextBox() { Text = (id+2).ToString(), Margin = new Thickness(5), MaxWidth = 120, IsEnabled = false });
 
-            for (int i = 1; i < columns.GetLength(0); i++)
+            for (int i = 1; i < columns.GetLength(0) - 1; i++)
             {
                 wrapPanel.Children.Add(new Label() { Content = columns[i,0], Margin = new Thickness(5), MaxWidth = 120 });
 
@@ -152,7 +152,7 @@ namespace client
             StringBuilder query = new StringBuilder(string.Format("UPDATE [{0}] SET ", table.TableName));
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
-            for (int i = 1; i < table.Columns.Count; i++)
+            for (int i = 1; i < table.Columns.Count - 1; i++)
             {
                 var item = wrapPanel.Children[2 * i + 1];
                 string type = item.GetType().ToString();
@@ -200,7 +200,7 @@ namespace client
 
             bool isEmpty = true;
             List<OleDbParameter> parameters = new List<OleDbParameter>();
-            for (int i = 1; i < table.Columns.Count; i++)
+            for (int i = 1; i < table.Columns.Count - 1; i++)
             {
                 var item = wrapPanel.Children[2 * i + 1];
                 string type = item.GetType().ToString();
