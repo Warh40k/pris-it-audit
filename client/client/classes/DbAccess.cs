@@ -12,7 +12,6 @@ namespace client
     public class DbAccess
     {
         public string conString;
-        public List<string> tables;
         public OleDbConnection con;
         OleDbDataAdapter oda;
 
@@ -22,6 +21,7 @@ namespace client
             con = new OleDbConnection(conString);
             oda = new OleDbDataAdapter();
         }
+
 
         public DataTable SelectQuery(string query)
         {
@@ -76,12 +76,19 @@ namespace client
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {
+            List<string> treeItems = new List<string>();
             TreeView tree = new TreeView();
 
-            tables = GetTables();
+            if (branch == "Запросы")
+            {
+                foreach (string key in MainWindow.queries.Keys)
+                    treeItems.Add(key);
+            }
+            else
+                treeItems = GetTables();
             TreeViewItem treeItem = new TreeViewItem() { Header = branch };
 
-            foreach (string str in tables)
+            foreach (string str in treeItems)
             {
                 TreeViewItem item = new TreeViewItem();
                 item.Header = str;

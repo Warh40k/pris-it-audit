@@ -16,7 +16,7 @@ namespace client
         DataTable currentTable;
         public delegate void GridUpdate(string tableName);
 
-        Dictionary<string, string> queries = new Dictionary<string, string>()
+        Dictionary<string, string> tableJoins = new Dictionary<string, string>()
         {
             {"Сотрудник", "SELECT Сотрудник.Код, Сотрудник.Название, Должность.Название, Подразделение.Название, Сотрудник.Удалить " +
                 "FROM Подразделение RIGHT JOIN (Должность RIGHT JOIN Сотрудник ON [Должность].[Код] = Сотрудник.[Должность]) ON Подразделение.[Код] = Сотрудник.[Подразделение] ORDER BY Сотрудник.Код;"},
@@ -27,6 +27,15 @@ namespace client
 
             {"Кабинет","SELECT Кабинет.Код, Подразделение.Название, Кабинет.Название AS Название, Кабинет.Удалить FROM Кабинет LEFT JOIN Подразделение ON Подразделение.Код = Кабинет.Подразделение ORDER BY Кабинет.Код;" }
         };
+
+        public static Dictionary<string, string> queries = new Dictionary<string, string>()
+        {
+            {"Местоположение", "SELECT Инфраструктура.Код, Оборудование.Название, Подразделение.Название, Кабинет.Код, Кабинет.Название AS Кабинет FROM (Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN (Оборудование INNER JOIN Инфраструктура ON Оборудование.Код = Инфраструктура.Код) ON Кабинет.Код = Инфраструктура.Кабинет WHERE Оборудование.Название LIKE \"*\" & ? & \"*\" ORDER BY Инфраструктура.Код;" },
+            {"По подразделениям", "SELECT Подразделение.Название, Оборудование.Название, Sum(Инфраструктура.Количество) AS [Sum-Количество], Sum(Инфраструктура.Цена) AS [Sum-Цена] FROM Оборудование INNER JOIN ((Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование GROUP BY Подразделение.Название, Оборудование.Название HAVING (((Подразделение.Название) Like \"*\" & ? & \"*\"));"},
+            {"По ответственному", "SELECT Подразделение.Название, Оборудование.Название, Sum(Инфраструктура.Количество) AS [Sum-Количество], Sum(Инфраструктура.Цена) AS [Sum-Цена] FROM Оборудование INNER JOIN ((Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование GROUP BY Подразделение.Название, Оборудование.Название HAVING (((Подразделение.Название) Like \"*\" & ? & \"*\"));" },
+            {"Стоимость инфраструктуры по подразделению", "SELECT Подразделение.Название, Sum(Инфраструктура.Цена) AS Сумма FROM (Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет GROUP BY Подразделение.Название ORDER BY Sum(Инфраструктура.Цена) DESC;" }
+        };
+
         public MainWindow()
         {
             LoginAndConnect loginWindow = new LoginAndConnect();
@@ -40,8 +49,10 @@ namespace client
                 db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
-                TreeView treeView = db.SetTree("Tables", clickEvent);
-                treeStack.Children.Add(treeView);
+                TreeView tablesView = db.SetTree("Таблицы", clickEvent);
+                TreeView queriesView = db.SetTree("Запросы", clickEvent);
+                treeStack.Children.Add(tablesView);
+                treeStack.Children.Add(queriesView);
             }
             
         }
@@ -64,10 +75,10 @@ namespace client
         }
         public void UpdateGrid(string tableName)
         {
-            if (queries.ContainsKey(tableName))
-                currentTable = db.SelectQuery(queries[tableName]);
+            if (tableJoins.ContainsKey(tableName))
+                currentTable = db.SelectQuery(tableJoins[tableName]);
             else
-                currentTable = db.SelectQuery(queries["Default"] + tableName + " ORDER BY Код");
+                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");
 
             string[,] columns = db.GetColumnNames(tableName);
 
