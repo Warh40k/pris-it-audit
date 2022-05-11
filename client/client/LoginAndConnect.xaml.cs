@@ -4,17 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
+using System.IO;
 namespace client
 {
     /// <summary>
@@ -41,8 +34,12 @@ namespace client
             string connectionString = string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", path);
             try
             {
+                if (Directory.Exists("data") == false)
+                    Directory.CreateDirectory("data");
                 db = new DbAccess(connectionString);
                 db.con.Open();
+
+                File.Copy(path, @"data\DataBase.accdb", true);
                 MessageBox.Show("Соединение успешно установлено", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 con_label.Content = "Соединение установлено";
                 con_label.Foreground = Brushes.Green;
