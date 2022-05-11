@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Windows.Controls;
 using System.Text;
+using System.Windows;
 
 namespace client
 {
@@ -121,6 +122,22 @@ namespace client
                 columnNames[int.Parse(row["ORDINAL_Position"].ToString()) - 1, 1] = row["DATA_TYPE"].ToString();
             }
             return columnNames;
+        }
+        public ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, DataTable table, string selectedItem = "")
+        {
+            ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
+            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
+            {
+                string foreignId = foreignColumnValues.Rows[j][0].ToString();
+                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
+
+                if (foreignValue == selectedItem)
+                    combo.SelectedIndex = j;
+                combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
+            }
+
+            return combo;
+
         }
     }
 }
