@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +35,12 @@ namespace client
                 con_label.Content = "Соединение установлено";
                 con_label.Foreground = Brushes.Green;
                 login_stack.IsEnabled = true;
-                
+                OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код, Название FROM Должность"), db.con);
+                DataTable foreignColumnValues = new DataTable();
+                outerAdapter.Fill(foreignColumnValues);
+                db.con.Close();
+                var items = db.GetForeignItems(foreignColumnValues, 0).Items;
+                position_combo.ItemsSource = items;  
             }
             catch(System.Data.OleDb.OleDbException)
             {

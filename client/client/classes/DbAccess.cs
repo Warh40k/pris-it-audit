@@ -123,9 +123,18 @@ namespace client
             }
             return columnNames;
         }
-        public ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, DataTable table, string selectedItem = "")
+        public ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, DataTable table=null, string selectedItem = "")
         {
-            ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
+            ComboBox combo = new ComboBox();
+            if(table != null)
+            {
+                combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
+            }
+            else
+            {
+                combo = new ComboBox() { Margin = new Thickness(5), MaxWidth = 120 };
+            }
+
             for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
             {
                 string foreignId = foreignColumnValues.Rows[j][0].ToString();
