@@ -13,13 +13,13 @@
                     <TextBox x:Name="path_textbox" TextWrapping="Wrap" Text="Путь к бд" Width="210" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
                     <Button x:Name="path_button" Content="Обзор" Width="85" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Click="path_button_Click"/>
                 </WrapPanel>
-                <Button Content="Соединение" Width="120" Click="Button_Click_1" Margin="0,16,0,0"/>
+                <Button x:Name="connect_button" Content="Соединение" Width="120" Click="connect_button_Click" Margin="0,16,0,0"/>
                 <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,16,0,0"/>
             </StackPanel>
         </Border>
         <StackPanel x:Name="login_stack" Orientation="Vertical" Height="229" IsEnabled="False">
             <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." HorizontalContentAlignment="Center" Margin="0,14,0,0"/>
-            <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0"/>
+            <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0" SelectedIndex="0"/>
             <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0"/>
             <PasswordBox x:Name="passwordbox" Width="220" ToolTip="Пароль" AutomationProperties.HelpText="Пароль" Margin="0,14,0,0"/>
             <Button x:Name="sign_in" Content="Вход" Width="116" AutomationProperties.HelpText="Подтвердить" Click="Button_Click" Margin="0,14,0,0"/>

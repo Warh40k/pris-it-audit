@@ -28,11 +28,16 @@ namespace client
         {
             InitializeComponent();
             path_textbox.Text = dbPath;
-            string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", dbPath);
+        }
+
+        private void CheckConnection(string path)
+        {
+            string connectionString = string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", path);
             try
             {
                 db = new DbAccess(connectionString);
                 db.con.Open();
+                MessageBox.Show("Соединение успешно установлено", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 con_label.Content = "Соединение установлено";
                 con_label.Foreground = Brushes.Green;
                 login_stack.IsEnabled = true;
@@ -40,21 +45,23 @@ namespace client
                 DataTable foreignColumnValues = new DataTable();
                 outerAdapter.Fill(foreignColumnValues);
                 db.con.Close();
-                var items = db.GetForeignItems(foreignColumnValues, 0).Items;
-                position_combo.ItemsSource = items;  
+                ItemCollection items = db.GetForeignItems(foreignColumnValues, 0).Items;
+                foreach (ComboBoxItem item in items)
+                    position_combo.Items.Add(item.Content);
             }
-            catch(System.Data.OleDb.OleDbException)
+            catch (OleDbException)
             {
-                MessageBox.Show(string.Format("База данных {0} не найдена. Попробуйте задать путь самостоятельно.", dbPath), "Ошибка пути", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format("База данных {0} не найдена. Попробуйте задать путь самостоятельно.", path), "Ошибка пути", MessageBoxButton.OK, MessageBoxImage.Error);
                 con_label.Content = "Соединение не установлено";
+                login_stack.IsEnabled = false;
                 con_label.Foreground = Brushes.Red;
             }
             finally
             {
                 db.con.Close();
             }
-
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -76,6 +83,11 @@ namespace client
             dialog.ShowDialog();
             path_textbox.Text = dialog.FileName;
 
+        }
+
+        private void connect_button_Click(object sender, RoutedEventArgs e)
+        {
+            CheckConnection(path_textbox.Text);
         }
     }
 }

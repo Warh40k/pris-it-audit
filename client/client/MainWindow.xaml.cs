@@ -31,12 +31,13 @@ namespace client
         {
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
+
             if (dialogResult == false)
                 Application.Current.Shutdown();
             else
             {
                 InitializeComponent();
-                db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=X:\\DataBase.accdb;");
+                db = new DbAccess(string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", loginWindow.path_textbox.Text));
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
                 TreeView treeView = db.SetTree("Tables", clickEvent);
