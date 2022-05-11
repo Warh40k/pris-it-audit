@@ -5,13 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="LoginAndConnect" Height="450" Width="420">
-    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
-        <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-        <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." Margin="0,16,0,0" HorizontalContentAlignment="Center"/>
-        <ComboBox x:Name="position_combo" Width="218" Margin="0,16,0,0" ToolTip="Должность" AutomationProperties.HelpText="Должность"/>
-        <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" Margin="0,16,0,0" ToolTip="Логин" AutomationProperties.HelpText="Логин"/>
-        <PasswordBox x:Name="passwordbox" Width="220" Margin="0,16,0,0" ToolTip="Пароль" AutomationProperties.HelpText="Пароль"/>
-        <Button x:Name="sign_in" Content="Вход" Margin="0,16,0,0" Width="115" AutomationProperties.HelpText="Подтвердить" Click="Button_Click"/>
+        Title="LoginAndConnect" Height="335" Width="420" ResizeMode="NoResize">
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="5,16,5,0">
+            <StackPanel Orientation="Vertical" Height="112" Width="420">
+                <WrapPanel Height="18" Margin="0,16,0,0">
+                    <TextBox TextWrapping="Wrap" Text="Путь к бд" Width="210" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <Button x:Name="path_button" Content="Button" Width="85" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                </WrapPanel>
+                <Button Content="Соединение" Width="120" Click="Button_Click_1" Margin="0,16,0,0"/>
+                <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,16,0,0"/>
+            </StackPanel>
+        </Border>
+        <StackPanel x:Name="login_stack" Orientation="Vertical" Height="189" IsEnabled="False">
+            <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." HorizontalContentAlignment="Center" Margin="0,14,0,0"/>
+            <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0"/>
+            <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0"/>
+            <PasswordBox x:Name="passwordbox" Width="220" ToolTip="Пароль" AutomationProperties.HelpText="Пароль" Margin="0,14,0,0"/>
+            <Button x:Name="sign_in" Content="Вход" Width="116" AutomationProperties.HelpText="Подтвердить" Click="Button_Click" Margin="0,14,0,0"/>
+        </StackPanel>
     </StackPanel>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,26 +26,35 @@ namespace client
         {
             InitializeComponent();
             string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", dbPath);
+            
+
             try
             {
                 db = new DbAccess(connectionString);
                 db.con.Open();
+                con_label.Content = "Соединение установлено";
+                con_label.Foreground = Brushes.Green;
+                login_stack.IsEnabled = true;
             }
             catch(System.Data.OleDb.OleDbException)
             {
                 MessageBox.Show(string.Format("База данных {0} не найдена. Попробуйте задать путь самостоятельно.", dbPath), "Ошибка пути", MessageBoxButton.OK, MessageBoxImage.Error);
-                
+                con_label.Content = "Соединение не установлено";
+                con_label.Foreground = Brushes.Red;
             }
             finally
             {
                 db.con.Close();
             }
-            con_label.Content = "Соединение установлено";
-            con_label.Foreground = Brushes.Green;
-            
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
 
         }
