@@ -64,5 +64,16 @@ namespace client
         {
 
         }
+
+        private void path_button_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            dialog.DefaultExt = "accdb";
+            dialog.Filter = "Database |*.accdb";
+            dialog.ShowDialog();
+            path_textbox.Text = dialog.FileName;
+
+        }
     }
 }

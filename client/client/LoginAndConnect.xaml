@@ -10,8 +10,8 @@
         <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="5,16,5,0">
             <StackPanel Orientation="Vertical" Height="112" Width="420">
                 <WrapPanel Height="18" Margin="0,16,0,0">
-                    <TextBox TextWrapping="Wrap" Text="Путь к бд" Width="210" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
-                    <Button x:Name="path_button" Content="Button" Width="85" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <TextBox x:Name="path_textbox" TextWrapping="Wrap" Text="Путь к бд" Width="210" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <Button x:Name="path_button" Content="Button" Width="85" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Click="path_button_Click"/>
                 </WrapPanel>
                 <Button Content="Соединение" Width="120" Click="Button_Click_1" Margin="0,16,0,0"/>
                 <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,16,0,0"/>
