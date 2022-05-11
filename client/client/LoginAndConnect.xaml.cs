@@ -26,8 +26,6 @@ namespace client
         {
             InitializeComponent();
             string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", dbPath);
-            
-
             try
             {
                 db = new DbAccess(connectionString);
@@ -35,6 +33,7 @@ namespace client
                 con_label.Content = "Соединение установлено";
                 con_label.Foreground = Brushes.Green;
                 login_stack.IsEnabled = true;
+                
             }
             catch(System.Data.OleDb.OleDbException)
             {

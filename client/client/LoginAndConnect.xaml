@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="LoginAndConnect" Height="335" Width="420" ResizeMode="NoResize">
+        Title="LoginAndConnect" Height="375" Width="420" ResizeMode="NoResize">
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="5,16,5,0">
             <StackPanel Orientation="Vertical" Height="112" Width="420">
@@ -17,7 +17,7 @@
                 <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,16,0,0"/>
             </StackPanel>
         </Border>
-        <StackPanel x:Name="login_stack" Orientation="Vertical" Height="189" IsEnabled="False">
+        <StackPanel x:Name="login_stack" Orientation="Vertical" Height="229" IsEnabled="False">
             <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." HorizontalContentAlignment="Center" Margin="0,14,0,0"/>
             <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0"/>
             <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0"/>
