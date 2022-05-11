@@ -30,13 +30,19 @@ namespace client
         public MainWindow()
         {
             LoginAndConnect loginWindow = new LoginAndConnect();
-            loginWindow.ShowDialog();
-            InitializeComponent();
-            db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=X:\\DataBase.accdb;");
-            System.Windows.Input.MouseButtonEventHandler clickEvent;
-            clickEvent = Item_MouseDoubleClick;
-            TreeView treeView = db.SetTree("Tables", clickEvent);
-            treeStack.Children.Add(treeView);
+            bool? dialogResult = loginWindow.ShowDialog();
+            if (dialogResult == false)
+                Application.Current.Shutdown();
+            else
+            {
+                InitializeComponent();
+                db = new DbAccess("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=X:\\DataBase.accdb;");
+                System.Windows.Input.MouseButtonEventHandler clickEvent;
+                clickEvent = Item_MouseDoubleClick;
+                TreeView treeView = db.SetTree("Tables", clickEvent);
+                treeStack.Children.Add(treeView);
+            }
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

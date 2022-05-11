@@ -27,6 +27,7 @@ namespace client
         public LoginAndConnect()
         {
             InitializeComponent();
+            path_textbox.Text = dbPath;
             string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};", dbPath);
             try
             {
@@ -57,7 +58,8 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            DialogResult = true;
+            Close();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
