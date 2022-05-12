@@ -27,10 +27,7 @@ namespace client
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
             OleDbDataAdapter adapter = new OleDbDataAdapter(command);
-            oda.SelectCommand = command;
-            DataTable dt = new DataTable();
-            oda.Fill(dt);
-            con.Close();
+           
             OleDbParameter parameter = new OleDbParameter();
             // Если не таблица, а запрос
             if (tableName != null)
@@ -40,6 +37,7 @@ namespace client
                 {
                     case "Местоположение":
                         paramWindow.param_name.Content = "Название оборудования";
+                        paramWindow.param_combo.ItemsSource = GetForeignItems("Оборудование", "Название");
                         break;
                     case "По подразделениям":
                         paramWindow.param_name.Content = "Название подразделения";
@@ -51,11 +49,16 @@ namespace client
                         paramWindow.param_name.Content = "Название подразделения";
                         break;
                 }
-               
                 paramWindow.ShowDialog();
-                parameter.Value = paramWindow.param_textbox.Text;
+                parameter.Value = paramWindow.param_combo.Text;
+                command.Parameters.Add(parameter);
             }
-             
+
+            oda.SelectCommand = command;
+            DataTable dt = new DataTable();
+            oda.Fill(dt);
+            con.Close();
+
             foreach (DataColumn column in dt.Columns)
                 column.ColumnName.ToString();
             
@@ -179,6 +182,20 @@ namespace client
 
             return combo;
 
+        }
+        public List<string> GetForeignItems(string tableName, string columnName)
+        {
+            List<string> collection = new List<string>();
+            OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код, [{0}] FROM [{1}]", columnName, tableName), con);
+            DataTable foreignColumnValues = new DataTable();
+            outerAdapter.Fill(foreignColumnValues);
+            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
+            {
+                string foreignId = foreignColumnValues.Rows[j][0].ToString();
+                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
+                collection.Add(foreignValue);
+            }
+            return collection;
         }
     }
 }
