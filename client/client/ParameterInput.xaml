@@ -1,0 +1,14 @@
+﻿<Window x:Class="client.ParameterInput"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="ParameterInput" Height="240" Width="305" ResizeMode="CanResize" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+    <StackPanel VerticalAlignment="Center">
+        <Label x:Name="param_name" Content="Описание параметра" Margin="0,15,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBox x:Name="param_textbox" TextWrapping="Wrap" Text="TextBox" Width="233" Margin="0,15,0,0"/>
+        <Button x:Name="submit_button" Content="Подтвердить" Width="160" Margin="0,15,0,0"/>
+    </StackPanel>
+</Window>

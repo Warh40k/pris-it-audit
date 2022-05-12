@@ -30,7 +30,7 @@ namespace client
 
         public static Dictionary<string, string> queries = new Dictionary<string, string>()
         {
-            {"Местоположение", "SELECT Инфраструктура.Код, Оборудование.Название, Подразделение.Название, Кабинет.Код, Кабинет.Название AS Кабинет FROM (Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN (Оборудование INNER JOIN Инфраструктура ON Оборудование.Код = Инфраструктура.Код) ON Кабинет.Код = Инфраструктура.Кабинет WHERE Оборудование.Название LIKE \"*\" & ? & \"*\" ORDER BY Инфраструктура.Код;" },
+            {"Местоположение", "SELECT Инфраструктура.Код, Оборудование.Название, Кабинет.Название, Подразделение.Название FROM (Подразделение INNER JOIN Кабинет ON Подразделение.[Код] = Кабинет.[Подразделение]) INNER JOIN (Оборудование INNER JOIN Инфраструктура ON Оборудование.[Код] = Инфраструктура.[Оборудование]) ON Кабинет.[Код] = Инфраструктура.[Кабинет] WHERE Оборудование.Название=\"Коммутатор Juniper QFX10002-72Q\"" },
             {"По подразделениям", "SELECT Подразделение.Название, Оборудование.Название, Sum(Инфраструктура.Количество) AS [Sum-Количество], Sum(Инфраструктура.Цена) AS [Sum-Цена] FROM Оборудование INNER JOIN ((Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование GROUP BY Подразделение.Название, Оборудование.Название HAVING (((Подразделение.Название) Like \"*\" & ? & \"*\"));"},
             {"По ответственному", "SELECT Подразделение.Название, Оборудование.Название, Sum(Инфраструктура.Количество) AS [Sum-Количество], Sum(Инфраструктура.Цена) AS [Sum-Цена] FROM Оборудование INNER JOIN ((Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование GROUP BY Подразделение.Название, Оборудование.Название HAVING (((Подразделение.Название) Like \"*\" & ? & \"*\"));" },
             {"Стоимость инфраструктуры по подразделению", "SELECT Подразделение.Название, Sum(Инфраструктура.Цена) AS Сумма FROM (Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет GROUP BY Подразделение.Название ORDER BY Sum(Инфраструктура.Цена) DESC;" }
@@ -38,6 +38,7 @@ namespace client
 
         public MainWindow()
         {
+            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
 
@@ -46,7 +47,6 @@ namespace client
             else
             {
                 InitializeComponent();
-                db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
                 TreeView tablesView = db.SetTree("Таблицы", clickEvent);
@@ -75,17 +75,18 @@ namespace client
         }
         public void UpdateGrid(string tableName)
         {
+            string[,] columns = db.GetColumnNames(tableName);
             if (tableJoins.ContainsKey(tableName))
                 currentTable = db.SelectQuery(tableJoins[tableName]);
+            else if (queries.ContainsKey(tableName))
+                currentTable = db.SelectQuery(queries[tableName], tableName);
             else
-                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");
-
-            string[,] columns = db.GetColumnNames(tableName);
+                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");   
 
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
-                currentTable.Columns[i].ColumnName = columns[i, 0];
+                //currentTable.Columns[i].ColumnName = columns[i, 0];
             }
 
             dataGrid.ItemsSource = currentTable.DefaultView;

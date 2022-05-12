@@ -20,3 +20,5 @@ C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\test.g.
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\test.baml
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\LoginAndConnect.g.cs
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\LoginAndConnect.baml
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\ParameterInput.g.cs
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\ParameterInput.baml

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -23,17 +22,43 @@ namespace client
         }
 
 
-        public DataTable SelectQuery(string query)
+        public DataTable SelectQuery(string query, string tableName=null)
         {
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
+            OleDbDataAdapter adapter = new OleDbDataAdapter(command);
             oda.SelectCommand = command;
-
-            DataTable dt = new DataTable(); 
+            DataTable dt = new DataTable();
             oda.Fill(dt);
+            con.Close();
+            OleDbParameter parameter = new OleDbParameter();
+            // Если не таблица, а запрос
+            if (tableName != null)
+            {
+                ParameterInput paramWindow = new ParameterInput();
+                switch (tableName)
+                {
+                    case "Местоположение":
+                        paramWindow.param_name.Content = "Название оборудования";
+                        break;
+                    case "По подразделениям":
+                        paramWindow.param_name.Content = "Название подразделения";
+                        break;
+                    case "По ответственному":
+                        paramWindow.param_name.Content = "Имя ответственного";
+                        break;
+                    case "Стоимость по подразделениям":
+                        paramWindow.param_name.Content = "Название подразделения";
+                        break;
+                }
+               
+                paramWindow.ShowDialog();
+                parameter.Value = paramWindow.param_textbox.Text;
+            }
+             
             foreach (DataColumn column in dt.Columns)
                 column.ColumnName.ToString();
-            con.Close();
+            
             return dt;
             
         }
