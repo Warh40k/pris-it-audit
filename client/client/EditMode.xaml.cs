@@ -212,7 +212,7 @@ namespace client
                     parameters.Add(parameter);
                     isEmpty = false;
                 }
-                else if ((string)value != table.Rows[currentId][field].ToString() && (string)value != "")
+                else if ((string)value != "")
                 {
                     parameters.Add(new OleDbParameter(field, value));
                     isEmpty = false;
