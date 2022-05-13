@@ -22,3 +22,4 @@ C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\LoginAn
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\LoginAndConnect.baml
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\ParameterInput.g.cs
 C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\ParameterInput.baml
+C:\Users\Никита\source\repos\pris-it-audit\client\client\obj\Debug\client.csproj.ResolveComReference.cache

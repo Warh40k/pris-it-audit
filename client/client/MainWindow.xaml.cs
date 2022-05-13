@@ -4,6 +4,8 @@ using System.Windows.Controls;
 using System.Data;
 using System.Data.OleDb;
 using System;
+using System.Text;
+using System.IO;
 
 namespace client
 {
@@ -38,6 +40,7 @@ namespace client
 
         public MainWindow()
         {
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
@@ -158,6 +161,33 @@ namespace client
                 UpdateGrid(currentTable.TableName);
             }
 
+        }
+
+        private async void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            StringBuilder csv = new StringBuilder();
+            foreach (DataColumn column in currentTable.Columns)
+                csv.Append(column.ColumnName + ";");
+            csv.Remove(csv.Length - 1, 1);
+            csv.Append('\n');
+
+            foreach(DataRow row in currentTable.Rows)
+            {
+                foreach(var item in row.ItemArray)
+                {
+                    csv.Append(item + ";");
+                }
+                csv.Remove(csv.Length - 1, 1);
+                csv.Append("\n");
+            }
+            csv.Remove(csv.Length - 1, 1);
+
+            using (FileStream writer = new FileStream("file.csv", FileMode.Create))
+            {
+                byte[] buffer = Encoding.GetEncoding(1251).GetBytes(csv.ToString());
+                await writer.WriteAsync(buffer, 0, buffer.Length);
+            }
+            MessageBox.Show("Файл записан");
         }
     }
 }
