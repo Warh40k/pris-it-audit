@@ -79,7 +79,35 @@ namespace client
             if (tableJoins.ContainsKey(tableName))
                 currentTable = db.SelectQuery(tableJoins[tableName]);
             else if (queries.ContainsKey(tableName))
-                currentTable = db.SelectQuery(queries[tableName], tableName);
+            {
+                ParameterInput paramWindow = new ParameterInput();
+                OleDbCommand command = new OleDbCommand(queries[tableName]);
+                switch (tableName)
+                {
+                    case "Местоположение":
+                        paramWindow.param_name.Content = "Название оборудования";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Оборудование", "Название");
+                        break;
+                    case "По подразделениям":
+                        paramWindow.param_name.Content = "Название подразделения";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Подразделение", "Название");
+                        break;
+                    case "По ответственному":
+                        paramWindow.param_name.Content = "Имя ответственного";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Сотрудник", "Название");
+                        break;
+                    case "Стоимость инфраструктуры по подразделению":
+                        paramWindow.DialogResult = true;
+                        break;
+                }
+                if (tableName != "Стоимость инфраструктуры по подразделению")
+                {
+                    paramWindow.ShowDialog();
+                    command.Parameters.AddWithValue("param", paramWindow.param_combo.Text);
+                    currentTable = db.SelectQuery(command);
+                }
+            }
+                
             else
                 currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");   
 

@@ -22,40 +22,10 @@ namespace client
         }
 
 
-        public DataTable SelectQuery(string query, string tableName=null)
+        public DataTable SelectQuery(string query)
         {
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
-            OleDbDataAdapter adapter = new OleDbDataAdapter(command);
-           
-            OleDbParameter parameter = new OleDbParameter();
-            // Если не таблица, а запрос
-            if (tableName != null)
-            {
-                ParameterInput paramWindow = new ParameterInput();
-                switch (tableName)
-                {
-                    case "Местоположение":
-                        paramWindow.param_name.Content = "Название оборудования";
-                        paramWindow.param_combo.ItemsSource = GetForeignItems("Оборудование", "Название");
-                        break;
-                    case "По подразделениям":
-                        paramWindow.param_name.Content = "Название подразделения";
-                        paramWindow.param_combo.ItemsSource = GetForeignItems("Подразделение", "Название");
-                        break;
-                    case "По ответственному":
-                        paramWindow.param_name.Content = "Имя ответственного";
-                        paramWindow.param_combo.ItemsSource = GetForeignItems("Сотрудник", "Название");
-                        break;
-                    case "Стоимость по подразделениям":
-                        paramWindow.param_name.Content = "Название подразделения";
-                        paramWindow.param_combo.ItemsSource = GetForeignItems("Подразделение", "Название");
-                        break;
-                }
-                paramWindow.ShowDialog();
-                parameter.Value = paramWindow.param_combo.Text;
-                command.Parameters.Add(parameter);
-            }
 
             oda.SelectCommand = command;
             DataTable dt = new DataTable();
@@ -67,6 +37,19 @@ namespace client
             
             return dt;
             
+        }
+        public DataTable SelectQuery(OleDbCommand command)
+        {
+
+            DataTable dt = new DataTable();
+            oda.SelectCommand = command;
+            oda.SelectCommand.Connection = con;
+
+            con.Open();
+            oda.Fill(dt);
+            con.Close();
+
+            return dt;
         }
         public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
