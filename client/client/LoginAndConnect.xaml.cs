@@ -22,7 +22,7 @@ namespace client
             {"galBatur", "Менеджер" },
             {"antichip", "Системный администратор" }
         };
-        string dbPath = "X:\\DataBase.accdb";
+        string dbPath = @"C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\DataBase.accdb";
         public LoginAndConnect()
         {
             InitializeComponent();

@@ -41,12 +41,15 @@ namespace client
                         break;
                     case "По подразделениям":
                         paramWindow.param_name.Content = "Название подразделения";
+                        paramWindow.param_combo.ItemsSource = GetForeignItems("Подразделение", "Название");
                         break;
                     case "По ответственному":
                         paramWindow.param_name.Content = "Имя ответственного";
+                        paramWindow.param_combo.ItemsSource = GetForeignItems("Сотрудник", "Название");
                         break;
                     case "Стоимость по подразделениям":
                         paramWindow.param_name.Content = "Название подразделения";
+                        paramWindow.param_combo.ItemsSource = GetForeignItems("Подразделение", "Название");
                         break;
                 }
                 paramWindow.ShowDialog();
