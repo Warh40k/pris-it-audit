@@ -76,6 +76,8 @@ namespace client
         public void UpdateGrid(string tableName)
         {
             string[,] columns = db.GetColumnNames(tableName);
+            ParameterInput paramWindow = new ParameterInput();
+
             if (tableJoins.ContainsKey(tableName))
             {
                 currentTable = db.SelectQuery(tableJoins[tableName]);
@@ -84,7 +86,6 @@ namespace client
             else if (queries.ContainsKey(tableName))
             {
                 button_grid.IsEnabled = false;
-                ParameterInput paramWindow = new ParameterInput();
                 OleDbCommand command = new OleDbCommand(queries[tableName]);
                 switch (tableName)
                 {
@@ -100,18 +101,16 @@ namespace client
                         paramWindow.param_name.Content = "Имя ответственного";
                         paramWindow.param_combo.ItemsSource = db.GetForeignItems("Сотрудник", "Название");
                         break;
-                    case "Стоимость инфраструктуры по подразделению":
-                        paramWindow.DialogResult = true;
-                        break;
                 }
                 if (tableName != "Стоимость инфраструктуры по подразделению")
-                {
+                { 
                     paramWindow.ShowDialog();
+                    if (paramWindow.DialogResult == false)
+                        return;
                     command.Parameters.AddWithValue("param", paramWindow.param_combo.Text);
-                    currentTable = db.SelectQuery(command);
                 }
-            }
-                
+                currentTable = db.SelectQuery(command);
+            }  
             else
             {
                 currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");

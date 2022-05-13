@@ -9,6 +9,6 @@
     <StackPanel VerticalAlignment="Center">
         <Label x:Name="param_name" Content="Описание параметра" Margin="0,15,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <ComboBox x:Name="param_combo" Width="158"/>
-        <Button x:Name="submit_button" Content="Подтвердить" Width="160" Margin="0,15,0,0"/>
+        <Button x:Name="submit_button" Content="Подтвердить" Width="160" Margin="0,15,0,0" Click="submit_button_Click"/>
     </StackPanel>
 </Window>

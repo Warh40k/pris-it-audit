@@ -23,5 +23,11 @@ namespace client
         {
             InitializeComponent();
         }
+
+        private void submit_button_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
     }
 }
