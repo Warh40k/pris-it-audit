@@ -15,14 +15,14 @@ namespace client
     /// </summary>
     public partial class LoginAndConnect : Window
     {
+        DbAccess db;
         Dictionary<string, string> credentials = new Dictionary<string, string>()
         {
             {"vladanis","Сотрудник" },
             {"galBatur", "Менеджер" },
             {"antichip", "Системный администратор" }
         };
-        string dbPath = "X:\\DataBase.accdb";
-        DbAccess db;
+        string dbPath = @"C:\Users\Никита\source\repos\pris-it-audit\client\client\bin\Debug\DataBase.accdb";
         public LoginAndConnect()
         {
             InitializeComponent();
@@ -38,7 +38,6 @@ namespace client
                     Directory.CreateDirectory("data");
                 db = new DbAccess(connectionString);
                 db.con.Open();
-
                 File.Copy(path, @"data\DataBase.accdb", true);
                 MessageBox.Show("Соединение успешно установлено", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 con_label.Content = "Соединение установлено";

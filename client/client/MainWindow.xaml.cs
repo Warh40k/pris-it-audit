@@ -16,7 +16,7 @@ namespace client
         DataTable currentTable;
         public delegate void GridUpdate(string tableName);
 
-        Dictionary<string, string> queries = new Dictionary<string, string>()
+        Dictionary<string, string> tableJoins = new Dictionary<string, string>()
         {
             {"Сотрудник", "SELECT Сотрудник.Код, Сотрудник.Название, Должность.Название, Подразделение.Название, Сотрудник.Удалить " +
                 "FROM Подразделение RIGHT JOIN (Должность RIGHT JOIN Сотрудник ON [Должность].[Код] = Сотрудник.[Должность]) ON Подразделение.[Код] = Сотрудник.[Подразделение] ORDER BY Сотрудник.Код;"},
@@ -27,8 +27,18 @@ namespace client
 
             {"Кабинет","SELECT Кабинет.Код, Подразделение.Название, Кабинет.Название AS Название, Кабинет.Удалить FROM Кабинет LEFT JOIN Подразделение ON Подразделение.Код = Кабинет.Подразделение ORDER BY Кабинет.Код;" }
         };
+
+        public static Dictionary<string, string> queries = new Dictionary<string, string>()
+        {
+            {"Местоположение", "SELECT Инфраструктура.Код, Оборудование.Название, Кабинет.Название, Подразделение.Название FROM (Подразделение INNER JOIN Кабинет ON Подразделение.[Код] = Кабинет.[Подразделение]) INNER JOIN (Оборудование INNER JOIN Инфраструктура ON Оборудование.[Код] = Инфраструктура.[Оборудование]) ON Кабинет.[Код] = Инфраструктура.[Кабинет] WHERE Оборудование.Название=?" },
+            {"По подразделениям", "SELECT Подразделение.Название, Оборудование.Название, Sum(Инфраструктура.Количество) AS [Sum-Количество], Sum(Инфраструктура.Цена) AS [Sum-Цена] FROM Оборудование INNER JOIN ((Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование GROUP BY Подразделение.Название, Оборудование.Название HAVING Подразделение.Название=?;"},
+            {"По ответственному", "SELECT Сотрудник.Название, Кабинет.Код, Оборудование.Название, Инфраструктура.ДатаИзготов, Инфраструктура.ДатаПриобр, Инфраструктура.Количество, Инфраструктура.Цена FROM Сотрудник RIGHT JOIN (Оборудование INNER JOIN (Кабинет INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет) ON Оборудование.Код = Инфраструктура.Оборудование) ON Сотрудник.Код = Инфраструктура.Сотрудник WHERE Сотрудник.Название=?;"},
+            {"Стоимость инфраструктуры по подразделению", "SELECT Подразделение.Название, Sum(Инфраструктура.Цена) AS Сумма FROM (Подразделение INNER JOIN Кабинет ON Подразделение.Код = Кабинет.Подразделение) INNER JOIN Инфраструктура ON Кабинет.Код = Инфраструктура.Кабинет GROUP BY Подразделение.Название ORDER BY Sum(Инфраструктура.Цена) DESC;" }
+        };
+
         public MainWindow()
         {
+            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
 
@@ -37,11 +47,12 @@ namespace client
             else
             {
                 InitializeComponent();
-                db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
-                TreeView treeView = db.SetTree("Tables", clickEvent);
-                treeStack.Children.Add(treeView);
+                TreeView tablesView = db.SetTree("Таблицы", clickEvent);
+                TreeView queriesView = db.SetTree("Запросы", clickEvent);
+                treeStack.Children.Add(tablesView);
+                treeStack.Children.Add(queriesView);
             }
             
         }
@@ -64,17 +75,55 @@ namespace client
         }
         public void UpdateGrid(string tableName)
         {
-            if (queries.ContainsKey(tableName))
-                currentTable = db.SelectQuery(queries[tableName]);
-            else
-                currentTable = db.SelectQuery(queries["Default"] + tableName + " ORDER BY Код");
-
             string[,] columns = db.GetColumnNames(tableName);
+            ParameterInput paramWindow = new ParameterInput();
+
+            if (tableJoins.ContainsKey(tableName))
+            {
+                currentTable = db.SelectQuery(tableJoins[tableName]);
+                button_grid.IsEnabled = true;
+            }
+            else if (queries.ContainsKey(tableName))
+            {
+                button_grid.IsEnabled = false;
+                OleDbCommand command = new OleDbCommand(queries[tableName]);
+                switch (tableName)
+                {
+                    case "Местоположение":
+                        paramWindow.param_name.Content = "Название оборудования";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Оборудование", "Название");
+                        break;
+                    case "По подразделениям":
+                        paramWindow.param_name.Content = "Название подразделения";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Подразделение", "Название");
+                        break;
+                    case "По ответственному":
+                        paramWindow.param_name.Content = "Имя ответственного";
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Сотрудник", "Название");
+                        break;
+                }
+                if (tableName != "Стоимость инфраструктуры по подразделению")
+                { 
+                    paramWindow.ShowDialog();
+                    if (paramWindow.DialogResult == false)
+                        return;
+                    command.Parameters.AddWithValue("param", paramWindow.param_combo.Text);
+                }
+                currentTable = db.SelectQuery(command);
+            }  
+            else
+            {
+                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");
+                button_grid.IsEnabled = true;
+            }
 
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
-                currentTable.Columns[i].ColumnName = columns[i, 0];
+                if (columns.Length == 0)
+                    currentTable.Columns[i].ColumnName = currentTable.Columns[i].Caption;
+                else
+                    currentTable.Columns[i].ColumnName = columns[i, 0];
             }
 
             dataGrid.ItemsSource = currentTable.DefaultView;

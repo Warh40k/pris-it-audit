@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -12,7 +11,6 @@ namespace client
     public class DbAccess
     {
         public string conString;
-        public List<string> tables;
         public OleDbConnection con;
         OleDbDataAdapter oda;
 
@@ -27,15 +25,30 @@ namespace client
         {
             con.Open();
             OleDbCommand command = new OleDbCommand(query, con);
-            oda.SelectCommand = command;
 
-            DataTable dt = new DataTable(); 
+            oda.SelectCommand = command;
+            DataTable dt = new DataTable();
             oda.Fill(dt);
+            con.Close();
+
             foreach (DataColumn column in dt.Columns)
                 column.ColumnName.ToString();
-            con.Close();
+            
             return dt;
             
+        }
+        public DataTable SelectQuery(OleDbCommand command)
+        {
+
+            DataTable dt = new DataTable();
+            oda.SelectCommand = command;
+            oda.SelectCommand.Connection = con;
+
+            con.Open();
+            oda.Fill(dt);
+            con.Close();
+
+            return dt;
         }
         public void Update(DataTable table, string query, List<OleDbParameter> parameters)
         {
@@ -76,12 +89,19 @@ namespace client
         }
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {
+            List<string> treeItems = new List<string>();
             TreeView tree = new TreeView();
 
-            tables = GetTables();
+            if (branch == "Запросы")
+            {
+                foreach (string key in MainWindow.queries.Keys)
+                    treeItems.Add(key);
+            }
+            else
+                treeItems = GetTables();
             TreeViewItem treeItem = new TreeViewItem() { Header = branch };
 
-            foreach (string str in tables)
+            foreach (string str in treeItems)
             {
                 TreeViewItem item = new TreeViewItem();
                 item.Header = str;
@@ -147,6 +167,20 @@ namespace client
 
             return combo;
 
+        }
+        public List<string> GetForeignItems(string tableName, string columnName)
+        {
+            List<string> collection = new List<string>();
+            OleDbDataAdapter outerAdapter = new OleDbDataAdapter(string.Format("SELECT DISTINCT Код, [{0}] FROM [{1}]", columnName, tableName), con);
+            DataTable foreignColumnValues = new DataTable();
+            outerAdapter.Fill(foreignColumnValues);
+            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
+            {
+                string foreignId = foreignColumnValues.Rows[j][0].ToString();
+                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
+                collection.Add(foreignValue);
+            }
+            return collection;
         }
     }
 }
