@@ -64,7 +64,7 @@ namespace client
                         db.con.Open();
                         outerAdapter.Fill(foreignColumnValues);
                         db.con.Close();
-                        ComboBox combo = GetForeignItems(foreignColumnValues, i, rows[id][i].ToString());
+                        ComboBox combo = db.GetForeignItems(foreignColumnValues, i, table, rows[id][i].ToString());
                         
                         wrapPanel.Children.Add(combo);
                         notJoined = false;
@@ -104,7 +104,7 @@ namespace client
                     db.con.Open();
                     outerAdapter.Fill(foreignColumnValues);
                     db.con.Close();
-                    ComboBox combo = GetForeignItems(foreignColumnValues, i);
+                    ComboBox combo = db.GetForeignItems(foreignColumnValues, i, table);
 
                     wrapPanel.Children.Add(combo);
                     notJoined = false;
@@ -117,22 +117,6 @@ namespace client
                 else
                     wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
-        }
-        ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, string selectedItem="")
-        {
-            ComboBox combo = new ComboBox() { Text = table.Columns[columnId].Caption, Margin = new Thickness(5), MaxWidth = 120 };
-            for (int j = 0; j < foreignColumnValues.Rows.Count; j++)
-            {
-                string foreignId = foreignColumnValues.Rows[j][0].ToString();
-                string foreignValue = foreignColumnValues.Rows[j][1].ToString();
-
-                if (foreignValue == selectedItem)
-                    combo.SelectedIndex = j;
-                combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
-            }
-            
-            return combo;
-
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {

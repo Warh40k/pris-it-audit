@@ -58,10 +58,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="classes\DbAccess.cs" />
+    <Compile Include="LoginAndConnect.xaml.cs">
+      <DependentUpon>LoginAndConnect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterInput.xaml.cs">
+      <DependentUpon>ParameterInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="test.xaml.cs">
       <DependentUpon>test.xaml</DependentUpon>
     </Compile>
     <Page Include="EditMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginAndConnect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -80,6 +90,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ParameterInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,0 +1,28 @@
+﻿<Window x:Class="client.LoginAndConnect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="LoginAndConnect" Height="375" Width="420" ResizeMode="NoResize">
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="5,16,5,0">
+            <StackPanel Orientation="Vertical" Height="112" Width="420">
+                <WrapPanel Height="18" Margin="0,16,0,0">
+                    <TextBox x:Name="path_textbox" TextWrapping="Wrap" Text="Путь к бд" Width="210" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <Button x:Name="path_button" Content="Обзор" Width="85" Margin="16,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Click="path_button_Click"/>
+                </WrapPanel>
+                <Button x:Name="connect_button" Content="Соединение" Width="120" Click="connect_button_Click" Margin="0,16,0,0"/>
+                <Label x:Name="con_label" Content="Состояние подключения" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,16,0,0"/>
+            </StackPanel>
+        </Border>
+        <StackPanel x:Name="login_stack" Orientation="Vertical" Height="229" IsEnabled="False">
+            <Label x:Name="welcome_label" Content="Добро пожаловать. Пожалуйста, авторизуйтесь." HorizontalContentAlignment="Center" Margin="0,14,0,0"/>
+            <ComboBox x:Name="position_combo" Width="218" ToolTip="Должность" AutomationProperties.HelpText="Должность" Margin="0,14,0,0" SelectedIndex="0"/>
+            <TextBox x:Name="login_textbox" TextWrapping="Wrap" Width="220" ToolTip="Логин" AutomationProperties.HelpText="Логин" Margin="0,14,0,0" Text="galBatur"/>
+            <PasswordBox x:Name="passwordbox" Width="220" ToolTip="Пароль" AutomationProperties.HelpText="Пароль" Margin="0,14,0,0" Password="Менеджер"/>
+            <Button x:Name="sign_in" Content="Вход" Width="116" AutomationProperties.HelpText="Подтвердить" Click="Button_Click" Margin="0,14,0,0"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
