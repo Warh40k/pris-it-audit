@@ -21,7 +21,6 @@ namespace client
             oda = new OleDbDataAdapter();
         }
 
-
         public DataTable SelectQuery(string query)
         {
             con.Open();

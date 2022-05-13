@@ -77,9 +77,13 @@ namespace client
         {
             string[,] columns = db.GetColumnNames(tableName);
             if (tableJoins.ContainsKey(tableName))
+            {
                 currentTable = db.SelectQuery(tableJoins[tableName]);
+                button_grid.IsEnabled = true;
+            }
             else if (queries.ContainsKey(tableName))
             {
+                button_grid.IsEnabled = false;
                 ParameterInput paramWindow = new ParameterInput();
                 OleDbCommand command = new OleDbCommand(queries[tableName]);
                 switch (tableName)
@@ -109,7 +113,10 @@ namespace client
             }
                 
             else
-                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");   
+            {
+                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");
+                button_grid.IsEnabled = true;
+            }
 
             for (int i = 0; i < currentTable.Columns.Count; i++)
             {

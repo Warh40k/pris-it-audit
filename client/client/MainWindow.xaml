@@ -9,7 +9,6 @@
         Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip">
     <Grid>
         <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
-            <MenuItem Header="MenuItem"/>
             <MenuItem Header="Обновить" Click="MenuItem_Click"/>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
@@ -18,7 +17,7 @@
             </StackPanel>
             <DataGrid x:Name="dataGrid" IsReadOnly="True" MinWidth="670" DockPanel.Dock="Right" Background="#FFC6BCBC" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5,0,0,0" ColumnWidth="Auto"/>
         </DockPanel>
-        <Grid Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40">
+        <Grid x:Name="button_grid" Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.Row="0" Height="40" IsEnabled="False">
             <Button Content="Изменить" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click" Width="60" Height="20"/>
             <Button Content="Добавить&#xD;&#xA;Добавить" HorizontalAlignment="Center" Margin="0,0,70,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_1"/>
             <Button Content="Удалить" HorizontalAlignment="Center" Margin="210,0,0,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_2"/>
