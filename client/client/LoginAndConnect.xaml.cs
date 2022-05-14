@@ -92,7 +92,8 @@ namespace client
             dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             dialog.DefaultExt = "accdb";
             dialog.Filter = "Database |*.accdb";
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() == false)
+                return;
             path_textbox.Text = dialog.FileName;
 
         }
