@@ -16,6 +16,8 @@ namespace client
     {
         DbAccess db;
         DataTable currentTable;
+        string serverFile = "";
+        string clientFile = "data\\DataBase.accdb";
         public delegate void GridUpdate(string tableName);
 
         Dictionary<string, string> tableJoins = new Dictionary<string, string>()
@@ -41,7 +43,7 @@ namespace client
         public MainWindow()
         {
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
+            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + clientFile);
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
 
@@ -50,6 +52,7 @@ namespace client
             else
             {
                 InitializeComponent();
+                serverFile = loginWindow.dbPath;
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
                 TreeView tablesView = db.SetTree("Таблицы", clickEvent);
@@ -206,6 +209,11 @@ namespace client
             
             MessageBox.Show("Файл записан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             System.Diagnostics.Process.Start(exportFile);
+        }
+        private void sync_button_Click(object sender, RoutedEventArgs e)
+        {
+            db.Sync(serverFile, clientFile);
+            UpdateGrid(currentTable.TableName);
         }
     }
 }
