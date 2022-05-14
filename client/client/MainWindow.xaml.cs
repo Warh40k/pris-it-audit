@@ -163,9 +163,19 @@ namespace client
 
         }
 
-        private async void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private async void export_button_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder csv = new StringBuilder();
+            Microsoft.Win32.SaveFileDialog saveDialog = new Microsoft.Win32.SaveFileDialog();
+            saveDialog.AddExtension = true;
+            saveDialog.DefaultExt = "csv";
+            string exportFile = "";
+
+            if (saveDialog.ShowDialog() == false)
+                return;
+            
+            exportFile = saveDialog.FileName;
+            //Заполнение строки данными таблицы в формате csv
             foreach (DataColumn column in currentTable.Columns)
                 csv.Append(column.ColumnName + ";");
             csv.Remove(csv.Length - 1, 1);
@@ -181,13 +191,21 @@ namespace client
                 csv.Append("\n");
             }
             csv.Remove(csv.Length - 1, 1);
-
-            using (FileStream writer = new FileStream("file.csv", FileMode.Create))
+            try
             {
-                byte[] buffer = Encoding.GetEncoding(1251).GetBytes(csv.ToString());
-                await writer.WriteAsync(buffer, 0, buffer.Length);
+                using (FileStream writer = new FileStream(exportFile, FileMode.Create))
+                {
+                    byte[] buffer = Encoding.GetEncoding(1251).GetBytes(csv.ToString());
+                    await writer.WriteAsync(buffer, 0, buffer.Length);
+                }
             }
-            MessageBox.Show("Файл записан");
+            catch(IOException)
+            {
+                MessageBox.Show("Экспорт не удался. Проверьте подключение и попробуйте ещё раз", "Беда", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
+            MessageBox.Show("Файл записан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+            System.Diagnostics.Process.Start(exportFile);
         }
     }
 }

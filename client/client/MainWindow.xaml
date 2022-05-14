@@ -10,7 +10,7 @@
     <Grid>
         <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
             <MenuItem Header="Обновить" Click="MenuItem_Click"/>
-            <MenuItem Header="Экспорт" Click="MenuItem_Click_1"/>
+            <MenuItem Header="Экспорт" Click="export_button_Click"/>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
             <StackPanel x:Name="treeStack" Orientation="Vertical" Width="140">
