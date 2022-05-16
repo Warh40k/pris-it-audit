@@ -16,6 +16,8 @@ namespace client
     {
         DbAccess db;
         DataTable currentTable;
+        string serverFile = "";
+        string clientFile = "data\\DataBase.accdb";
         public delegate void GridUpdate(string tableName);
 
         Dictionary<string, string> tableJoins = new Dictionary<string, string>()
@@ -41,7 +43,7 @@ namespace client
         public MainWindow()
         {
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=data\DataBase.accdb");
+            db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + clientFile);
             LoginAndConnect loginWindow = new LoginAndConnect();
             bool? dialogResult = loginWindow.ShowDialog();
 
@@ -50,6 +52,7 @@ namespace client
             else
             {
                 InitializeComponent();
+                serverFile = loginWindow.dbPath;
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
                 TreeView tablesView = db.SetTree("Таблицы", clickEvent);
@@ -66,9 +69,19 @@ namespace client
             var selected = dataGrid.SelectedIndex;
             if (selected == -1)
                 selected = 0;
+             
+            bool successSync = db.Sync(serverFile, clientFile);
+
+            if (successSync == false)
+                return;
             EditMode em = new EditMode(db, currentTable, updateGrid, selected);
+            File.Create(serverFile + "\\..\\locked_db").Close();
+
             em.ChangeItem(selected);
             em.ShowDialog();
+            if (em.DialogResult == true)
+                db.Sync(clientFile, serverFile);
+            File.Delete(serverFile + "\\..\\locked_db");
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -142,9 +155,21 @@ namespace client
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             GridUpdate updateGrid = UpdateGrid;
+
+            bool successSync = db.Sync(serverFile, clientFile);
+
+            if (successSync == false)
+                return;
+
+            File.Create(serverFile + "\\..\\locked_db").Close();
+
             EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
             em.AddItem();
             em.ShowDialog();
+
+            if (em.DialogResult == true)
+                db.Sync(clientFile, serverFile);
+            File.Delete(serverFile + "\\..\\locked_db");
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -206,6 +231,12 @@ namespace client
             
             MessageBox.Show("Файл записан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             System.Diagnostics.Process.Start(exportFile);
+        }
+        private void sync_button_Click(object sender, RoutedEventArgs e)
+        {
+            db.Sync(serverFile, clientFile);
+            if (currentTable != null)
+                UpdateGrid(currentTable.TableName);
         }
     }
 }

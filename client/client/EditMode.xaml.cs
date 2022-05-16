@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls;
 using System;
 
 namespace client
@@ -123,8 +124,9 @@ namespace client
             else
                 UpdateItem();
 
-            Close();
+           
             UpdateGrid(table.TableName);
+            DialogResult = true;
         }
 
         private void UpdateItem()

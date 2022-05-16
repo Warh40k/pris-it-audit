@@ -5,6 +5,8 @@ using System.Data.OleDb;
 using System.Windows.Controls;
 using System.Text;
 using System.Windows;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace client
 {
@@ -181,6 +183,44 @@ namespace client
                 collection.Add(foreignValue);
             }
             return collection;
+        }
+
+        public bool Sync(string serverFile, string clientFile)
+        {
+            if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb"))
+            {
+                Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
+                waitWindow.ShowDialog();
+                if (waitWindow.DialogResult == false)
+                    return false;
+            }
+
+            byte[] clientHash;
+            byte[] serverHash;
+
+            using (SHA256 sha = SHA256Managed.Create())
+            {
+                using (FileStream stream = new FileStream(clientFile, FileMode.Open))
+                {
+                    clientHash = sha.ComputeHash(stream);
+                }
+                using (FileStream stream = new FileStream(serverFile, FileMode.Open))
+                {
+                    serverHash = sha.ComputeHash(stream);
+                }
+               
+                if (File.GetLastWriteTime(serverFile).CompareTo(File.GetLastWriteTime(clientFile)) < 0)
+                {
+                    File.Copy(clientFile, serverFile, true);
+                }
+                else
+                {
+                    File.Copy(serverFile, clientFile, true);
+                }
+                
+            }
+
+            return true;
         }
     }
 }
