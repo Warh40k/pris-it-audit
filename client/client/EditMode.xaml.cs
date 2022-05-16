@@ -124,8 +124,9 @@ namespace client
             else
                 UpdateItem();
 
-            Close();
+           
             UpdateGrid(table.TableName);
+            DialogResult = true;
         }
 
         private void UpdateItem()

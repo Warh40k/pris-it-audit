@@ -69,9 +69,19 @@ namespace client
             var selected = dataGrid.SelectedIndex;
             if (selected == -1)
                 selected = 0;
+             
+            bool successSync = db.Sync(serverFile, clientFile);
+
+            if (successSync == false)
+                return;
             EditMode em = new EditMode(db, currentTable, updateGrid, selected);
+            File.Create(serverFile + "\\..\\locked_db").Close();
+
             em.ChangeItem(selected);
             em.ShowDialog();
+            if (em.DialogResult == true)
+                db.Sync(clientFile, serverFile);
+            File.Delete(serverFile + "\\..\\locked_db");
         }
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -145,9 +155,21 @@ namespace client
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             GridUpdate updateGrid = UpdateGrid;
+
+            bool successSync = db.Sync(serverFile, clientFile);
+
+            if (successSync == false)
+                return;
+
+            File.Create(serverFile + "\\..\\locked_db").Close();
+
             EditMode em = new EditMode(db,currentTable, updateGrid, currentTable.Rows.Count - 1);
             em.AddItem();
             em.ShowDialog();
+
+            if (em.DialogResult == true)
+                db.Sync(clientFile, serverFile);
+            File.Delete(serverFile + "\\..\\locked_db");
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

@@ -10,7 +10,6 @@ namespace client
     {
         string lockFile;
         Thread childThread;
-        Thread mainThread;
 
         public Wait(string lockFile)
         {
@@ -60,7 +59,6 @@ namespace client
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             childThread.Abort();
-            DialogResult = false;
         }
     }
 }

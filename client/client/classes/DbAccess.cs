@@ -185,14 +185,14 @@ namespace client
             return collection;
         }
 
-        public void Sync(string serverFile, string clientFile)
+        public bool Sync(string serverFile, string clientFile)
         {
             if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb"))
             {
                 Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
                 waitWindow.ShowDialog();
                 if (waitWindow.DialogResult == false)
-                    return;
+                    return false;
             }
 
             byte[] clientHash;
@@ -209,11 +209,7 @@ namespace client
                     serverHash = sha.ComputeHash(stream);
                 }
                
-                if (Enumerable.SequenceEqual(clientHash, serverHash))
-                {
-                    MessageBox.Show("Синхронизация не нужна");
-                }
-                else if (File.GetLastWriteTime(serverFile).CompareTo(File.GetLastWriteTime(clientFile)) < 0)
+                if (File.GetLastWriteTime(serverFile).CompareTo(File.GetLastWriteTime(clientFile)) < 0)
                 {
                     File.Copy(clientFile, serverFile, true);
                 }
@@ -224,7 +220,7 @@ namespace client
                 
             }
 
-
+            return true;
         }
     }
 }
