@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="LoginAndConnect" Height="375" Width="420" ResizeMode="NoResize">
+        Title="LoginAndConnect" Height="375" Width="420" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow">
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="5,16,5,0">
             <StackPanel Orientation="Vertical" Height="112" Width="420">

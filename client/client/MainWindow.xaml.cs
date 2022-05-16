@@ -213,7 +213,8 @@ namespace client
         private void sync_button_Click(object sender, RoutedEventArgs e)
         {
             db.Sync(serverFile, clientFile);
-            UpdateGrid(currentTable.TableName);
+            if (currentTable != null)
+                UpdateGrid(currentTable.TableName);
         }
     }
 }

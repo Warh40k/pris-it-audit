@@ -187,6 +187,14 @@ namespace client
 
         public void Sync(string serverFile, string clientFile)
         {
+            if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb"))
+            {
+                Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
+                waitWindow.ShowDialog();
+                if (waitWindow.DialogResult == false)
+                    return;
+            }
+
             byte[] clientHash;
             byte[] serverHash;
 
@@ -200,13 +208,10 @@ namespace client
                 {
                     serverHash = sha.ComputeHash(stream);
                 }
+               
                 if (Enumerable.SequenceEqual(clientHash, serverHash))
                 {
-                    MessageBox.Show("Файлы одинаковы");
-                }
-                else if (File.Exists(serverFile + "..\\DataBase.laccdb"))
-                {
-                    MessageBox.Show("База занята. Попробуйте позже");
+                    MessageBox.Show("Синхронизация не нужна");
                 }
                 else if (File.GetLastWriteTime(serverFile).CompareTo(File.GetLastWriteTime(clientFile)) < 0)
                 {
@@ -216,6 +221,7 @@ namespace client
                 {
                     File.Copy(serverFile, clientFile, true);
                 }
+                
             }
 
 

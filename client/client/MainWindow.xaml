@@ -6,11 +6,10 @@
         xmlns:local="clr-namespace:client"
         xmlns:OleDb="clr-namespace:System.Data.OleDb;assembly=System.Data" x:Class="client.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip">
+        Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
             <MenuItem Header="Обновить" Click="MenuItem_Click"/>
-            <MenuItem Header="Экспорт" Click="export_button_Click"/>
             <MenuItem x:Name="sync_button" Header="Синхронизация" Click="sync_button_Click"/>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
@@ -23,6 +22,7 @@
             <Button Content="Изменить" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="70,10,0,0" Click="Button_Click" Width="60" Height="20"/>
             <Button Content="Добавить&#xD;&#xA;Добавить" HorizontalAlignment="Center" Margin="0,0,70,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_1"/>
             <Button Content="Удалить" HorizontalAlignment="Center" Margin="210,0,0,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="Button_Click_2"/>
+            <Button x:Name="export_button" Content="Экспорт" HorizontalAlignment="Center" Margin="600,0,0,10" VerticalAlignment="Bottom" Width="60" Height="20" Click="export_button_Click"/>
         </Grid>
     </Grid>
 </Window>
