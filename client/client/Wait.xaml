@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="Wait" Height="65" Width="260" ResizeMode="CanMinimize" Topmost="True" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="Wait" Height="90" Width="260" ResizeMode="CanMinimize" Topmost="True" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid IsEnabled="True">
         <Label Content="База занята. Ожидайте..." HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
 

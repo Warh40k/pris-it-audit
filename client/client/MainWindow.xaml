@@ -9,7 +9,6 @@
         Title="MainWindow" Height="450" Width="800" HorizontalAlignment="Stretch" MinWidth="800" MinHeight="450" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Grid>
         <Menu HorizontalContentAlignment="Stretch" MinWidth="800" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="18">
-            <MenuItem Header="Обновить" Click="MenuItem_Click"/>
             <MenuItem x:Name="sync_button" Header="Синхронизация" Click="sync_button_Click"/>
         </Menu>
         <DockPanel RenderTransformOrigin="0.5,0.5" Margin="0,21,0,42">
