@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 
 namespace client
 {
+    // класс для взаимодействия с базой данных
     public class DbAccess
     {
         public string conString;
@@ -65,6 +66,8 @@ namespace client
             oda.UpdateCommand.ExecuteNonQuery();
             con.Close();
         }
+
+        // Построение и выполнение SQL запроса вставки
         public void Insert(DataTable table, List<OleDbParameter> parameters)
         {
             StringBuilder fields = new StringBuilder(string.Format("INSERT INTO [{0}] ( ", table.TableName));
@@ -89,6 +92,8 @@ namespace client
             oda.InsertCommand.ExecuteNonQuery();
             con.Close();
         }
+
+        // Формирование дерева навигации по таблицам
         public TreeView SetTree(string branch, System.Windows.Input.MouseButtonEventHandler click)
         {
             List<string> treeItems = new List<string>();
@@ -114,6 +119,8 @@ namespace client
 
             return tree;
         }
+
+        // Получение исходного названия таблиц (SQL может их искажать, что мешает обратной вставке)
         public List<string> GetTables()
         {
             List<string> tables = new List<string>();
@@ -129,6 +136,7 @@ namespace client
             return tables;
         }
         
+        // Получение названия столбцов выбранной таблицы
         public string[,] GetColumnNames(string tableName)
         {
  
@@ -145,6 +153,8 @@ namespace client
             }
             return columnNames;
         }
+
+        // Получение значений конкретного столца указанной таблицы
         public ComboBox GetForeignItems(DataTable foreignColumnValues, int columnId, DataTable table=null, string selectedItem = "")
         {
             ComboBox combo = new ComboBox();
@@ -163,13 +173,14 @@ namespace client
                 string foreignValue = foreignColumnValues.Rows[j][1].ToString();
 
                 if (foreignValue == selectedItem)
-                    combo.SelectedIndex = j;
+                    combo.SelectedIndex = j; // При изменении значения записи выставляются текущие значения
                 combo.Items.Add(new ComboBoxItem() { Content = foreignValue, Uid = foreignId });
             }
 
             return combo;
 
         }
+
         public List<string> GetForeignItems(string tableName, string columnName)
         {
             List<string> collection = new List<string>();
@@ -190,6 +201,7 @@ namespace client
             byte[] clientHash;
             byte[] serverHash;
 
+            // Проверка сходства серверной и локальной бд (излишне)
             using (SHA256 sha = SHA256Managed.Create())
             {
                 using (FileStream stream = new FileStream(clientFile, FileMode.Open))

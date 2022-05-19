@@ -106,12 +106,12 @@ namespace client
             string[,] columns = db.GetColumnNames(tableName);
             ParameterInput paramWindow = new ParameterInput(); // Окно ввода параметра запроса
 
-            if (tableJoins.ContainsKey(tableName)) // Если это таблица
+            if (tableJoins.ContainsKey(tableName)) // Если это таблица и для неё явно указан SQL
             {
                 currentTable = db.SelectQuery(tableJoins[tableName]);
                 button_grid.IsEnabled = true;
             }
-            else if (queries.ContainsKey(tableName)) // Если это запрос
+            else if (queries.ContainsKey(tableName)) // Если это запрос и есть SQL для него
             {
                 button_grid.IsEnabled = false;
                 OleDbCommand command = new OleDbCommand(queries[tableName]);
@@ -135,17 +135,17 @@ namespace client
                     paramWindow.ShowDialog(); // Показываем окно ввода параметра
                     if (paramWindow.DialogResult == false)
                         return;
-                    command.Parameters.AddWithValue("param", paramWindow.param_combo.Text);
+                    command.Parameters.AddWithValue("param", paramWindow.param_combo.Text); // Добавление параметра с выбранным значением
                 }
                 currentTable = db.SelectQuery(command);
             }  
-            else
+            else // Если явно не указан SQL
             {
-                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код");
+                currentTable = db.SelectQuery(tableJoins["Default"] + tableName + " ORDER BY Код"); // В остальных случаях выводит всё, что есть
                 button_grid.IsEnabled = true;
             }
 
-            for (int i = 0; i < currentTable.Columns.Count; i++)
+            for (int i = 0; i < currentTable.Columns.Count; i++) // Переименовывание названия столбцов (нужно для правильного отображения данных и возможности обновления)
             {
                 currentTable.Columns[i].Caption = currentTable.Columns[i].ColumnName.Replace('.', '_');
                 if (columns.Length == 0)
@@ -188,6 +188,7 @@ namespace client
             File.Delete(serverFile + "\\..\\locked_db");
         }
 
+        // Отметка для удаления
         private void delete_button_Click(object sender, RoutedEventArgs e)
         {
             string query;
@@ -205,7 +206,10 @@ namespace client
 
         private async void export_button_Click(object sender, RoutedEventArgs e)
         {
+            //строка с содержимым таблицы
             StringBuilder csv = new StringBuilder();
+
+            // выбор пути сохранения
             Microsoft.Win32.SaveFileDialog saveDialog = new Microsoft.Win32.SaveFileDialog();
             saveDialog.AddExtension = true;
             saveDialog.DefaultExt = "csv";
@@ -216,13 +220,14 @@ namespace client
             
             exportFile = saveDialog.FileName;
 
-            //Заполнение строки данными таблицы в формате csv
+            //Шапка таблицы
             foreach (DataColumn column in currentTable.Columns)
                 csv.Append(column.ColumnName + ";");
             csv.Remove(csv.Length - 1, 1);
             csv.Append('\n');
 
-            foreach(DataRow row in currentTable.Rows)
+            //Заполнение строки данными таблицы в формате csv (столбцы разделять символом ";", а ряды - "\n")
+            foreach (DataRow row in currentTable.Rows)
             {
                 foreach(var item in row.ItemArray)
                 {
@@ -232,6 +237,8 @@ namespace client
                 csv.Append("\n");
             }
             csv.Remove(csv.Length - 1, 1);
+
+            //Запись в файл
             try
             {
                 using (FileStream writer = new FileStream(exportFile, FileMode.Create))
@@ -245,7 +252,7 @@ namespace client
                 MessageBox.Show("Экспорт не удался. Проверьте подключение и попробуйте ещё раз", "Беда", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
-            MessageBox.Show("Файл записан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Просмотр в программе по умолчанию (Excel)
             System.Diagnostics.Process.Start(exportFile)    ;
         }
         private void sync_button_Click(object sender, RoutedEventArgs e)

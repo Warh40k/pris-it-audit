@@ -8,12 +8,12 @@ using System;
 
 namespace client
 {
-
+    // Окно редактирования записи
     public partial class EditMode : Window
     {
         public DbAccess db;
         public DataTable table;
-        public int currentId = 0;
+        public int currentId = 0; // номер текущей записи
         MainWindow.GridUpdate UpdateGrid;
 
         public EditMode(DbAccess db, DataTable table, MainWindow.GridUpdate UpdateGrid = null, int currentId = 0)
@@ -25,11 +25,14 @@ namespace client
             this.UpdateGrid = UpdateGrid;
             this.currentId = currentId;
         }
+
+        //Переключить на запись с указанным Id
         public void ChangeItem(int id)
         {
             DataRowCollection rows = table.Rows;
             string[,] columns = db.GetColumnNames(table.TableName);
 
+            //Обработка крайних значений
             if (id > table.Rows.Count)
             {
                 currentId--;
@@ -40,7 +43,7 @@ namespace client
                 currentId = 0;
                 return;
             }
-            else
+            else // Заполнение окна элементами, данные из чужих таблиц - комбобокс с подстановкой
             {
                 wrapPanel.Children.Clear();
                 
@@ -78,6 +81,8 @@ namespace client
                 }
             }
         }
+
+        // Заполнение окна пустыми полями для дальнейшей вставки
         public void AddItem()
         {
             DataRowCollection rows = table.Rows;
@@ -116,6 +121,8 @@ namespace client
                     wrapPanel.Children.Add(new TextBox() { Margin = new Thickness(5), MaxWidth = 120, IsEnabled = notJoined });
             }
         }
+
+        // При нажатии ОК определяет операцию: добавлять новую запись или изменять существующую
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (currentId == table.Rows.Count - 1)
@@ -128,6 +135,7 @@ namespace client
             DialogResult = true;
         }
 
+        // Собирает введенные данные и формирует запрос UPDATE
         private void UpdateItem()
         {
             object value;
@@ -175,6 +183,8 @@ namespace client
             }
 
         }
+
+        //Аналогично UpdateItem, но с запросом Insert
         private void InsertItem()
         {
             string field;

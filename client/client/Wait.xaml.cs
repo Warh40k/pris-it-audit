@@ -31,19 +31,7 @@ namespace client
             childThread.Start();
         }
 
-        private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-           
-        }
-
-        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-        }
-
-        private void Window_Activated(object sender, System.EventArgs e)
-        {
-            
-        }
+        // Проверка освобождения файл-сервера
         void CheckLock()
         {
             while (true)

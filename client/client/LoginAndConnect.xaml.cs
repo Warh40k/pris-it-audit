@@ -69,10 +69,10 @@ namespace client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //Если логин существует и указанная должность совпадает с полномочиями указанного логина
             string selectedPosition = (string)position_combo.SelectedValue;
+            //Если логин существует, а пароль равен наименованию должности сотрудника
+
             if (credentials.Keys.Contains(login_textbox.Text) && selectedPosition == credentials[login_textbox.Text] && passwordbox.Password == credentials[login_textbox.Text])
-            //А пароль равен наименованию должности сотрудника
             {
                 dbPath = path_textbox.Text;
                 DialogResult = true;
@@ -81,11 +81,7 @@ namespace client
                 MessageBox.Show("Неверный логин или пароль","Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+        // Указать путь до файл-сервера
         private void path_button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
