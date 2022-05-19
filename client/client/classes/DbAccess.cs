@@ -185,16 +185,8 @@ namespace client
             return collection;
         }
 
-        public bool Sync(string serverFile, string clientFile)
+        public void Sync(string serverFile, string clientFile)
         {
-            if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb"))
-            {
-                Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
-                waitWindow.ShowDialog();
-                if (waitWindow.DialogResult == false)
-                    return false;
-            }
-
             byte[] clientHash;
             byte[] serverHash;
 
@@ -220,7 +212,6 @@ namespace client
                 
             }
 
-            return true;
         }
     }
 }

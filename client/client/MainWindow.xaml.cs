@@ -10,16 +10,18 @@ using System.IO;
 namespace client
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Главное окно приложения. Просмотр таблиц и запросов
     /// </summary>
     public partial class MainWindow : Window
     {
         DbAccess db;
-        DataTable currentTable;
-        string serverFile = "";
-        string clientFile = "data\\DataBase.accdb";
+
+        DataTable currentTable; // Таблица, отображаемая в текущий момент
+        string serverFile = ""; // Путь к файлу сервера
+        string clientFile = "data\\DataBase.accdb"; // Расположение локальной копии базы
         public delegate void GridUpdate(string tableName);
 
+        // SQL-запросы таблиц
         Dictionary<string, string> tableJoins = new Dictionary<string, string>()
         {
             {"Сотрудник", "SELECT Сотрудник.Код, Сотрудник.Название, Должность.Название, Подразделение.Название, Сотрудник.Удалить " +
@@ -32,6 +34,7 @@ namespace client
             {"Кабинет","SELECT Кабинет.Код, Подразделение.Название, Кабинет.Название AS Название, Кабинет.Удалить FROM Кабинет LEFT JOIN Подразделение ON Подразделение.Код = Кабинет.Подразделение ORDER BY Кабинет.Код;" }
         };
 
+        // SQL для запросов
         public static Dictionary<string, string> queries = new Dictionary<string, string>()
         {
             {"Местоположение", "SELECT Инфраструктура.Код, Оборудование.Название, Кабинет.Название, Подразделение.Название FROM (Подразделение INNER JOIN Кабинет ON Подразделение.[Код] = Кабинет.[Подразделение]) INNER JOIN (Оборудование INNER JOIN Инфраструктура ON Оборудование.[Код] = Инфраструктура.[Оборудование]) ON Кабинет.[Код] = Инфраструктура.[Кабинет] WHERE Оборудование.Название=?" },
@@ -45,7 +48,7 @@ namespace client
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             db = new DbAccess(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + clientFile);
             LoginAndConnect loginWindow = new LoginAndConnect();
-            bool? dialogResult = loginWindow.ShowDialog();
+            bool? dialogResult = loginWindow.ShowDialog(); // Открывает окно авторизации
 
             if (dialogResult == false)
                 Application.Current.Shutdown();
@@ -55,7 +58,7 @@ namespace client
                 serverFile = loginWindow.dbPath;
                 System.Windows.Input.MouseButtonEventHandler clickEvent;
                 clickEvent = Item_MouseDoubleClick;
-                TreeView tablesView = db.SetTree("Таблицы", clickEvent);
+                TreeView tablesView = db.SetTree("Таблицы", clickEvent); // Получение дерева таблиц и запросов
                 TreeView queriesView = db.SetTree("Запросы", clickEvent);
                 treeStack.Children.Add(tablesView);
                 treeStack.Children.Add(queriesView);
@@ -63,51 +66,60 @@ namespace client
             
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void change_button_Click(object sender, RoutedEventArgs e)
         {
             GridUpdate updateGrid = UpdateGrid;
-            var selected = dataGrid.SelectedIndex;
-            if (selected == -1)
+            var selected = dataGrid.SelectedIndex; // Номер выделенной строки в таблице
+            if (selected == -1) // Если никакой элемент не выбран
                 selected = 0;
-             
-            bool successSync = db.Sync(serverFile, clientFile);
 
-            if (successSync == false)
-                return;
+            if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb")) // Проверка блокировки базы данных
+            {
+                Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
+                waitWindow.ShowDialog(); // Вызов окна ожидания
+                if (waitWindow.DialogResult == false)
+                    return;
+            }
+            db.Sync(serverFile, clientFile);
+
             EditMode em = new EditMode(db, currentTable, updateGrid, selected);
-            File.Create(serverFile + "\\..\\locked_db").Close();
+            File.Create(serverFile + "\\..\\locked_db").Close(); // Заблокировать базу для других пользователей
 
-            em.ChangeItem(selected);
+            em.ChangeItem(selected); // Открыть окно изменение выбранного элемента
             em.ShowDialog();
             if (em.DialogResult == true)
                 db.Sync(clientFile, serverFile);
-            File.Delete(serverFile + "\\..\\locked_db");
+            File.Delete(serverFile + "\\..\\locked_db"); // Разблокировка
         }
+
+        // Двойное нажатие по элементу дерева таблиц
         public void Item_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            TreeViewItem item = (TreeViewItem)sender;
+            TreeViewItem item = (TreeViewItem)sender; 
             string tableName = item.Header.ToString();
             UpdateGrid(tableName);
         }
+        
+        // Функция обновления DataGridView
         public void UpdateGrid(string tableName)
         {
             string[,] columns = db.GetColumnNames(tableName);
-            ParameterInput paramWindow = new ParameterInput();
+            ParameterInput paramWindow = new ParameterInput(); // Окно ввода параметра запроса
 
-            if (tableJoins.ContainsKey(tableName))
+            if (tableJoins.ContainsKey(tableName)) // Если это таблица
             {
                 currentTable = db.SelectQuery(tableJoins[tableName]);
                 button_grid.IsEnabled = true;
             }
-            else if (queries.ContainsKey(tableName))
+            else if (queries.ContainsKey(tableName)) // Если это запрос
             {
                 button_grid.IsEnabled = false;
                 OleDbCommand command = new OleDbCommand(queries[tableName]);
                 switch (tableName)
                 {
                     case "Местоположение":
-                        paramWindow.param_name.Content = "Название оборудования";
-                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Оборудование", "Название");
+                        paramWindow.param_name.Content = "Название оборудования"; // Заголовок параметра
+                        paramWindow.param_combo.ItemsSource = db.GetForeignItems("Оборудование", "Название"); // Данные для подстановки
                         break;
                     case "По подразделениям":
                         paramWindow.param_name.Content = "Название подразделения";
@@ -118,9 +130,9 @@ namespace client
                         paramWindow.param_combo.ItemsSource = db.GetForeignItems("Сотрудник", "Название");
                         break;
                 }
-                if (tableName != "Стоимость инфраструктуры по подразделению")
+                if (tableName != "Стоимость инфраструктуры по подразделению") // Для этого запроса не нужны параметры
                 { 
-                    paramWindow.ShowDialog();
+                    paramWindow.ShowDialog(); // Показываем окно ввода параметра
                     if (paramWindow.DialogResult == false)
                         return;
                     command.Parameters.AddWithValue("param", paramWindow.param_combo.Text);
@@ -152,14 +164,18 @@ namespace client
             UpdateGrid(currentTable.TableName);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void add_button_Click(object sender, RoutedEventArgs e)
         {
             GridUpdate updateGrid = UpdateGrid;
+            if (File.Exists(serverFile + "\\..\\locked_db") || File.Exists(serverFile + "\\..\\DataBase.laccdb"))
+            {
+                Wait waitWindow = new Wait(serverFile + "\\..\\locked_db");
+                waitWindow.ShowDialog();
+                if (waitWindow.DialogResult == false)
+                    return;
+            }
 
-            bool successSync = db.Sync(serverFile, clientFile);
-
-            if (successSync == false)
-                return;
+            db.Sync(serverFile, clientFile);
 
             File.Create(serverFile + "\\..\\locked_db").Close();
 
@@ -172,12 +188,11 @@ namespace client
             File.Delete(serverFile + "\\..\\locked_db");
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void delete_button_Click(object sender, RoutedEventArgs e)
         {
             string query;
             if (dataGrid.SelectedIndex != -1)
             {
-                //query = string.Format("DELETE FROM [{0}] WHERE {1} = ?", currentTable.TableName, currentTable.Columns[0].ColumnName);
                 bool newState = !(bool)currentTable.Rows[dataGrid.SelectedIndex][dataGrid.Columns.Count - 1];
                 query = string.Format("UPDATE [{0}] SET Удалить = ? WHERE {1} = {2}", currentTable.TableName, currentTable.Columns[0].ColumnName, currentTable.Rows[dataGrid.SelectedIndex][0]);
                 List<OleDbParameter> parameters = new List<OleDbParameter>();
@@ -200,6 +215,7 @@ namespace client
                 return;
             
             exportFile = saveDialog.FileName;
+
             //Заполнение строки данными таблицы в формате csv
             foreach (DataColumn column in currentTable.Columns)
                 csv.Append(column.ColumnName + ";");
@@ -230,7 +246,7 @@ namespace client
             }
             
             MessageBox.Show("Файл записан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-            System.Diagnostics.Process.Start(exportFile);
+            System.Diagnostics.Process.Start(exportFile)    ;
         }
         private void sync_button_Click(object sender, RoutedEventArgs e)
         {

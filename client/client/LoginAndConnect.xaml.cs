@@ -74,8 +74,8 @@ namespace client
             if (credentials.Keys.Contains(login_textbox.Text) && selectedPosition == credentials[login_textbox.Text] && passwordbox.Password == credentials[login_textbox.Text])
             //А пароль равен наименованию должности сотрудника
             {
+                dbPath = path_textbox.Text;
                 DialogResult = true;
-                Close();
             }
             else
                 MessageBox.Show("Неверный логин или пароль","Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
